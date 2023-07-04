@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreign('client_id')->references('id')->on('clients');
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('agencia_id')->constrained('agencias');
+            $table->text('clientName')->nullable();
             $table->decimal('total', 10, 2)->default(0);
             $table->date('date')->nullable();
             $table->time('time')->nullable();

@@ -15,7 +15,7 @@
         <q-toolbar-title>
           <div class="text-bold" style="line-height: 1">
             <div>{{ user.name}}</div>
-            <div class="text-subtitle2">{{agencia.nombre}}</div>
+            <div class="text-subtitle2">{{agencia.nombre}}<q-chip dense color="yellow" size="10px" :label="user.type"/></div>
           </div>
         </q-toolbar-title>
         <div>
@@ -39,11 +39,21 @@
       <!--      :breakpoint="400"-->
       <q-layout>
         <q-header class="bg-white">
-          <q-list bordered padding class="text-black">
-            <q-item-label header class="text-bold">
-              Menu principal
+          <q-list class="text-black">
+            <q-item-label header class="text-bold q-pa-none q-ma-none text-center" >
+              <q-item clickable v-ripple class="q-pa-none q-ma-none">
+                <q-item-section avatar class="q-pa-none q-ma-none">
+                  <q-avatar class="q-pa-none q-ma-none">
+                    <q-img :src="agencia.logo.includes('http')?agencia.logo:`${$url}../images/${agencia.logo}`" width="50px" />
+                  </q-avatar>
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>{{agencia.telefono}}</q-item-label>
+                  <q-item-label caption>{{agencia.direccion}}</q-item-label>
+                </q-item-section>
+              </q-item>
             </q-item-label>
-            <q-item clickable v-ripple exact active-class="bg-primary text-white" to="/">
+            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/">
               <q-item-section avatar><q-icon name="o_store" /></q-item-section>
               <q-item-section>
                 <q-item-label>
@@ -54,7 +64,7 @@
                 </q-item-label>
               </q-item-section>
             </q-item>
-            <q-item clickable v-ripple exact active-class="bg-primary text-white" to="/sale">
+            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/sale">
               <q-item-section avatar><q-icon name="o_shopping_cart" /></q-item-section>
               <q-item-section>
                 <q-item-label>
@@ -64,8 +74,10 @@
                   </q-tooltip>
                 </q-item-label>
               </q-item-section>
+              <q-item-section side>
+              </q-item-section>
             </q-item>
-            <q-item clickable v-ripple exact active-class="bg-primary text-white" to="/productos" v-if="$store.user.id=='1'">
+            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/productos" v-if="$store.user.type=='admin'">
               <q-item-section avatar><q-icon name="o_local_mall" /></q-item-section>
               <q-item-section>
                 <q-item-label>Productos</q-item-label>
@@ -74,7 +86,7 @@
                 </q-tooltip>
               </q-item-section>
             </q-item>
-            <q-item clickable v-ripple exact active-class="bg-primary text-white" to="/clientes" v-if="$store.user.id=='1'">
+            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/clientes" v-if="$store.user.id=='1'">
               <q-item-section avatar><q-icon name="o_face" /></q-item-section>
               <q-item-section>
                 <q-item-label>Clientes</q-item-label>
@@ -83,7 +95,7 @@
                 </q-tooltip>
               </q-item-section>
             </q-item>
-            <q-item clickable v-ripple exact active-class="bg-primary text-white" to="/proveedores" v-if="$store.user.id=='1'">
+            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/proveedores" v-if="$store.user.id=='1'">
               <q-item-section avatar><q-icon name="o_assignment_ind" /></q-item-section>
               <q-item-section>
                 <q-item-label>Proveedores</q-item-label>
@@ -92,7 +104,7 @@
                 </q-tooltip>
               </q-item-section>
             </q-item>
-            <q-item clickable v-ripple exact active-class="bg-primary text-white" to="/reportes" v-if="$store.user.id=='1'">
+            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/reportes" v-if="$store.user.id=='1'">
               <q-item-section avatar><q-icon name="o_print" /></q-item-section>
               <q-item-section>
                 <q-item-label>Reportes</q-item-label>
@@ -101,7 +113,7 @@
                 </q-tooltip>
               </q-item-section>
             </q-item>
-            <q-item clickable v-ripple exact active-class="bg-primary text-white" to="/users" v-if="$store.user.id=='1'">
+            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/users" v-if="$store.user.id=='1'">
               <q-item-section avatar><q-icon name="o_manage_accounts" /></q-item-section>
               <q-item-section>
                 <q-item-label>Usuarios</q-item-label>
@@ -110,7 +122,7 @@
                 </q-tooltip>
               </q-item-section>
             </q-item>
-            <q-item clickable v-ripple exact active-class="bg-primary text-white" to="/productosPorCencer">
+            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/productosPorCencer">
               <q-item-section avatar><q-icon name="o_store" /></q-item-section>
               <q-item-section>
                 <q-item-label>Por cencer</q-item-label>

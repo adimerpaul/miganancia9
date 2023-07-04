@@ -8,8 +8,11 @@
         <q-input dense outlined v-model="dateFin" label="Fecha final" type="date" required />
       </div>
       <div class="col-12 col-md-2 text-center">
+        <q-btn icon="refresh" flat dense rounded no-caps @click="salesGet">
+          <q-tooltip>Actualizar</q-tooltip>
+        </q-btn>
         <q-btn color="black" no-caps flat icon="o_file_download" @click="downloadReport">
-          <div class="q-page-xs subrayado"> Exportar excel</div>
+          <div class="q-page-xs subrayado"> Export</div>
         </q-btn>
       </div>
       <div class="col-12 col-md-4 text-right">
@@ -18,9 +21,6 @@
         </q-btn>
         <q-btn :loading="loading" color="red-4" dense rounded no-caps icon="remove_circle_outline" label="Nuevo gasto" @click="saleAddGasto">
           <q-tooltip>Crear nuevo gasto</q-tooltip>
-        </q-btn>
-        <q-btn icon="refresh" flat dense rounded no-caps @click="salesGet">
-          <q-tooltip>Actualizar</q-tooltip>
         </q-btn>
       </div>
       <div class="col-12 col-md-4 q-pa-xs">
@@ -89,7 +89,7 @@
           <template v-slot:body="props">
             <q-tr :props="props">
               <q-td key="options" :props="props" class="text-center" auto-width>
-                <q-btn-dropdown label="Opciones" color="primary" dense no-caps v-if="props.row.canceled == 'No'">
+                <q-btn-dropdown label="Opciones" :color="props.row.type=='Egreso'?'red':'green'" dense no-caps v-if="props.row.canceled == 'No'">
                   <q-list>
                     <q-item clickable v-ripple @click="printSale(props.row)" v-close-popup>
                       <q-item-section avatar>

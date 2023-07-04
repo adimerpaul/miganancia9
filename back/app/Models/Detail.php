@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Detail extends Model
 {
-    use HasFactory, softDeletes;
+    use HasFactory;
     protected $fillable=[
         'sale_id',
         'user_id',

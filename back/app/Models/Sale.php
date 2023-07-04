@@ -20,5 +20,15 @@ class Sale extends Model
         'description',
         'canceled',
         'canceledBy',
+        'clientName',
     ];
+    public function details(){
+        return $this->hasMany(Detail::class);
+    }
+    public function client(){
+        return $this->belongsTo(Client::class);
+    }
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

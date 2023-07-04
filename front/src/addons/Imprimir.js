@@ -11,24 +11,24 @@ export class Imprimir {
     const doc = new jsPDF({
       // orientation: 'l',
       unit: 'mm',
-      format: [60+4*sale.details.length, 55]
+      format: [65+4*sale.details.length, 55]
     })
     let y = 5
     doc.setFont('courier', 'bold')
     doc.setFontSize(10)
-    doc.text(useCounterStore().env.razon, 28, y, { align: 'center' })
+    doc.text(useCounterStore().agencia.nombre, 28, y, { align: 'center' })
     doc.setFont(undefined, 'normal')
-    doc.text(useCounterStore().env.nit, 28, y+4, { align: 'center' })
-    doc.text(useCounterStore().env.direccion, 28, y+8, { align: 'center', maxWidth: 50 })
-    doc.text(useCounterStore().env.telefono, 28, y+16, { align: 'center' })
+    // doc.text(useCounterStore().agencia.nit, 28, y+4, { align: 'center' })
+    doc.text(useCounterStore().agencia.direccion, 28, y+8, { align: 'center', maxWidth: 50 })
+    doc.text(useCounterStore().agencia.telefono, 28, y+16, { align: 'center' })
     doc.setFont(undefined, 'bold')
-    doc.text(useCounterStore().user.sucursal, 28, y+20, { align: 'center' })
+    doc.text('Sucursal 0', 28, y+20, { align: 'center' })
     doc.line(5, y+22, 50, y+22)
 
     doc.setFontSize(9)
     doc.text('CLIENTE', 5, y+25)
     doc.setFont(undefined, 'normal')
-    doc.text(sale.client==null?'':sale.client.name, 28, y+28, { align: 'center', maxWidth: 50 })
+    doc.text(sale.client==null?'':sale.clientName, 28, y+28, { align: 'center', maxWidth: 50 })
     doc.setFont(undefined, 'bold')
     doc.text('FECHA', 5, y+32)
     doc.setFont(undefined, 'normal')
@@ -59,7 +59,8 @@ export class Imprimir {
     doc.setFont(undefined, 'bold')
     doc.text('USUARIO', 5, y+8)
     doc.setFont(undefined, 'normal')
-    doc.text(useCounterStore().user.name, 50, y+8, { align: 'right', maxWidth: 50 })
+    const nameSplit = useCounterStore().user.name.split(' ')
+    doc.text(nameSplit[0], 50, y+8, { align: 'right', maxWidth: 50 })
 
     doc.save(`sale-${sale.id}${moment().format('YYYYMMDDHHmmss')}.pdf`)
     // doc.autoPrint();
@@ -82,7 +83,7 @@ export class Imprimir {
           light: '#FFF'
         }
       }
-      const env = useCounterStore().env
+      const env = useCounterStore().agencia
       QRCode.toDataURL(env.url2 + 'consulta/QR?nit=' + env.nit + '&cuf=' + factura.cuf + '&numero=' + factura.numeroFactura + '&t=2', opts).then(url => {
         let cadena = `${this.head()}
   <div style='padding-left: 0.5cm;padding-right: 0.5cm'>

@@ -52,15 +52,15 @@
                 <div class="row cursor-pointer" v-if="products.length>0">
                   <div class="col-4 col-md-2" v-for="p in products" :key="p.id">
                     <q-card @click="clickAddSale(p)" class="q-pa-xs" flat bordered>
-                      <q-img :src="p.imagen.includes('http')?p.imagen:`${$url}../images/${p.imagen}`" width="100%" height="100px">
+                      <q-img :src="p.image.includes('http')?p.image:`${$url}../images/${p.image}`" :ratio="1" >
                         <div class="absolute-bottom text-center text-subtitle2" style="padding: 0px 0px;">
                           {{p.name}}
                         </div>
                         <q-badge v-if="p.cantidadPedida>0" color="yellow-9" floating :label="p.cantidadPedida" style="padding: 5px"/>
                       </q-img>
                       <q-card-section class="q-pa-none q-ma-none">
-                        <div class="text-center text-subtitle2 text-bold">{{ p.price }} Bs</div>
-<!--                        <div :class="p.cantidad<=0?'text-center text-bold text-red':' text-center text-bold'">{{ p.cantidad }} {{ $q.screen.lt.md?'Dis':'Disponible' }}</div>-->
+                        <div class="text-center text-subtitle2">{{ p.price }} Bs</div>
+                        <div :class="p.amount<=0?'text-center text-bold text-red':' text-center text-bold'">{{ p.amount }} {{ $q.screen.lt.md?'Dis':'Disponible' }}</div>
                       </q-card-section>
                     </q-card>
                   </div>
@@ -109,7 +109,7 @@
                     <q-td key="nombre" :props="props">
                       <div class="row">
                         <div class="col-3">
-                          <q-img :src="props.row.imagen.includes('http')?props.row.imagen:`${$url}../images/${props.row.imagen}`" width="40px" height="80px" />
+                          <q-img :src="props.row.image.includes('http')?props.row.image:`${$url}../images/${props.row.image}`" width="40px" height="80px" />
                         </div>
                         <div class="col-9">
                           <div class="text-bold">{{props.row.name}}</div>
@@ -367,10 +367,14 @@ export default {
         })
         this.totalProducts = 0
         Imprimir.facturaPdf(res.data)
-      }).catch(err => {
-        this.loading = false
-        this.$alert.error(err.response.data.message)
       })
+        .finally(() => {
+          this.loading = false
+        })
+      //   .catch(err => {
+      //   this.loading = false
+      //   this.$alert.error(err.response.data.message)
+      // })
     },
     clientSearch () {
       this.$axios.post('searchClient', this.client).then(res => {

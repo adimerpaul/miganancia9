@@ -19,10 +19,10 @@ class ProductController extends Controller{
         $products = Product::where('name', 'like', "%$search%")
             ->orderByRaw($ordenar)
             ->paginate($paginate);
-//            $costoRow=Product::select(DB::raw('sum(costo*cantidad)'))
-//                ->where('name', 'like', "%$search%")
-//                ->first();
-//            $costoTotal=$costoRow["sum(costo*cantidad)"]==null?0:$costoRow["sum(costo*cantidad)"];
+            $costoRow=Product::select(DB::raw('sum(cost*amount)'))
+                ->where('name', 'like', "%$search%")
+                ->first();
+            $costoTotal=$costoRow["sum(cost*amount)"]==null?0:$costoRow["sum(cost*amount)"];
 //        }else{
 //            if ($category_id == 0 && $agencia_id != 0){
 //                $products = Product::where('name', 'like', "%$search%")
@@ -58,11 +58,11 @@ class ProductController extends Controller{
 //                $costoTotal=$costoRow["sum(costo*cantidad)"]==null?0:$costoRow["sum(costo*cantidad)"];
 //            }
 //        }
-        return json_encode(['products' => $products, 'costoTotal' => 0]);
+        return json_encode(['products' => $products, 'costoTotal' => $costoTotal]);
     }
     public function store(StoreProductRequest $request){
 //        if ($request->category_id == 0) $request->merge(['category_id' => null]);
-//        if ($request->agencia_id == 0) $request->merge(['agencia_id' => null]);
+        if ($request->agencia_id == 0) $request->merge(['agencia_id' => $request->user()->agencia_id]);
         return Product::create($request->all());
     }
     public function show(Product $product){ return $product; }

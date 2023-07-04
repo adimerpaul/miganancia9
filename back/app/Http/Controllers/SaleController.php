@@ -35,6 +35,7 @@ class SaleController extends Controller{
         $sales->type = 'Egreso';
         $sales->client_id = $request->client_id==0?null:$request->client_id;
         $sales->user_id = $request->user()->id;
+        $sales->agencia_id = $request->user()->agencia_id;
         $sales->save();
 
         $detail = new Detail();
@@ -60,7 +61,9 @@ class SaleController extends Controller{
         $sales = new Sale();
         $sales->client_id = $client->id;
         $sales->user_id = $request->user()->id;
+        $sales->agencia_id = $request->user()->agencia_id;
         $sales->total = $request->montoTotal;
+        $sales->clientName = strtoupper($request->client['name']);
 //        $sales->numeroFactura = 0;
         $sales->date = date('Y-m-d');
         $sales->time = date('H:i:s');
@@ -99,6 +102,10 @@ class SaleController extends Controller{
     }
     public function insertUpdateClient(Request $request)
     {
+        if ($request->client['nit'] == 0) {
+            $client = Client::where('nit', $request->client['nit'])->first();
+            return $client;
+        }
         if (Client::where('nit', $request->client['nit'])->count()) {
             $client = Client::where('nit', $request->client['nit'])->first();
             $client->name = strtoupper($request->client['name']);

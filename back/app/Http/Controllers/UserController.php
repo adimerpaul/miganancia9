@@ -120,12 +120,7 @@ class UserController extends Controller
         $user=User::where('id',$request->user()->id)->firstOrFail();
         return response()->json([
             'user'=>$user,
-            'env'=>[
-                'nit'=>env('NIT'),
-                'razon'=>env('RAZON'),
-                'direccion'=>env("DIRECCION"),
-                'telefono'=>env("TELEFONO"),
-            ]
+            'agencia'=>Agencia::find($user->agencia_id)
         ],200);
     }
 }

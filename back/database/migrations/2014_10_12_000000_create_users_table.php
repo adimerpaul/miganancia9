@@ -22,6 +22,7 @@ return new class extends Migration
             $table->unsignedBigInteger('agencia_id')->nullable();
             $table->foreign('agencia_id')->references('id')->on('agencias');
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

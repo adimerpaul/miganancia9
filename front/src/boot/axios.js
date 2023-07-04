@@ -37,7 +37,7 @@ export default boot(({ app, router }) => {
     app.config.globalProperties.$axios.post('me').then((res) => {
       // console.log(res.data)
       useCounterStore().user = res.data.user
-      useCounterStore().env = res.data.env
+      useCounterStore().agencia = res.data.agencia
       // useCounterStore().agencia_id = res.data.agencia_id
     }).catch(() => {
       app.config.globalProperties.$axios.defaults.headers.common.Authorization = ''
