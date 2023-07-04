@@ -23,14 +23,14 @@ class UserSeeder extends Seeder
             ],
             [
                 'name'=> 'Amilkar Daniel Quispaya Lima',
-                'nickname'=> 'Admin',
-                'password'=> bcrypt('buenAdmin'),
+                'nickname'=> 'Buenadmin',
+                'password'=> bcrypt('Buenadmin'),
                 'type'=> 'admin',
                 'agencia_id'=> 1
             ],
             [
                 'name'=> 'Vendedor',
-                'nickname'=> 'vendero',
+                'nickname'=> 'Buenvendero',
                 'password'=> bcrypt('buen123'),
                 'type'=> 'user',
                 'agencia_id'=> 1
