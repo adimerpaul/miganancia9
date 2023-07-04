@@ -87,8 +87,8 @@ export default {
           this.$store.isLoggedIn = true
           this.$axios.defaults.headers.common.Authorization = `Bearer ${response.data.token}`
           localStorage.setItem('tokenMiGanancia', response.data.token)
-          localStorage.setItem('user', response.data.user)
-          localStorage.setItem('agencia', response.data.agencia)
+          localStorage.setItem('user', JSON.stringify(response.data.user))
+          localStorage.setItem('agencia', JSON.stringify(response.data.agencia))
           this.$router.push('/')
         })
         .catch(error => {

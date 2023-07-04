@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header
-      class="bg-white text-black"
+      class=""
     >
       <q-toolbar>
         <q-btn
@@ -13,9 +13,10 @@
           @click="leftDrawerOpen = !leftDrawerOpen"
         />
         <q-toolbar-title>
-          <span class="text-bold">{{ $store.user.name }}</span>
-          <q-chip dense v-if="$store.user.agencia"
-                  class="bg-primary text-white text-subtitle2 text-bold">{{$store.user.agencia.nombre}}</q-chip>
+          <div class="text-bold" style="line-height: 1">
+            <div>{{ user.name}}</div>
+            <div class="text-subtitle2">{{agencia.nombre}}</div>
+          </div>
         </q-toolbar-title>
         <div>
           <q-btn
@@ -149,6 +150,8 @@ export default {
   },
   data () {
     return {
+      user: JSON.parse(localStorage.getItem('user')),
+      agencia: JSON.parse(localStorage.getItem('agencia')),
       leftDrawerOpen: false,
       essentialLinks: [
         {
@@ -186,7 +189,7 @@ export default {
         this.$axios.post('logout').then(() => {
           this.$axios.defaults.headers.common.Authorization = ''
           this.$store.user = {}
-          localStorage.removeItem('tokenSantidad')
+          localStorage.removeItem('tokenMiGanancia')
           localStorage.removeItem('user')
           this.$store.isLoggedIn = false
           this.$q.loading.hide()

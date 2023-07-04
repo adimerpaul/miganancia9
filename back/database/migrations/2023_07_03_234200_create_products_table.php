@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->decimal('price', 10, 2)->default(0);
             $table->decimal('cost', 10, 2)->default(0);
-            $table->decimal('amount', 10, 2)->default(0);
+            $table->integer('amount')->default(0);
             $table->unsignedBigInteger('agencia_id')->nullable();
             $table->foreign('agencia_id')->references('id')->on('agencias');
             $table->unsignedBigInteger('user_id')->nullable();
