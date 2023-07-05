@@ -15,7 +15,7 @@ class ProductSeeder extends Seeder
     {
         DB::table('products')->insert([
             [
-                'name'=>'Pique',
+                'name'=>'PIQUE',
                 'image'=>'335448575_949037916094248_7992765055281601092_n.jpg',
                 'price'=>50,
                 'cost'=>50,

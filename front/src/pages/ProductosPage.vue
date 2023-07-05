@@ -129,7 +129,8 @@
       <q-card style="width: 500px; max-width: 80vw;">
         <q-card-section class="row items-center q-pb-none">
           <div class="text-subtitle2 text-bold text-grey">
-            {{ productAction === 'create' ? 'Nuevo producto' : productAction === 'edit' ? 'Editar producto' : 'Detalle de producto' }}
+            {{ productAction === 'create' ? 'Nuevo producto' :
+            productAction === 'edit' ? 'Editar producto' : productAction === 'ver' ? 'Detalle de producto' : 'Comprar de producto' }}
           </div>
           <q-space/>
           <q-btn icon="o_highlight_off" flat round dense v-close-popup />
@@ -201,6 +202,9 @@
               <div class="col-6">
                 <q-btn :loading="loading" icon="o_edit" label="Editar" outline rounded dense color="grey" @click="productAction = 'edit'" no-caps class="full-width" />
               </div>
+              <div class="col-12">
+                <q-btn :loading="loading" icon="o_shopping_cart" label="Comprar" rounded dense color="green" @click="clickbuy(product)" no-caps class="full-width q-mt-xs" />
+              </div>
             </div>
           </q-form>
           <q-form @submit="productSave" v-if="productAction === 'create' || productAction === 'edit'">
@@ -240,6 +244,27 @@
                    :disable="!product.name || !product.price"
                    label="Guardar" no-caps type="submit" :loading="loading"/>
           </q-form>
+          <q-form @submit="productSave" v-if="productAction === 'buy'">
+            <q-input outlined v-model="product.image" label="Imagen" dense hint="Selecciona una imagen" />
+            <q-input outlined v-model="product.amount" label="Cantidad" input-class="text-center" dense hint="">
+              <template v-slot:append>
+                <q-icon name="o_add_circle_outline" @click="cantidadMore" class="cursor-pointer"/>
+              </template>
+              <template v-slot:prepend>
+                <q-icon name="o_remove_circle_outline" @click="cantidadMinus" class="cursor-pointer"/>
+              </template>
+            </q-input>
+            <q-input outlined v-model="product.cost" label="Costo" dense hint="Valor que pagas al proveedor por el producto"/>
+            <q-input outlined v-model="product.price" label="Precio*" dense hint="Valor que le cobras a tus clientes por el producto" :rules="[val => !!val || 'Este campo es requerido']"/>
+            <!--            <q-select class="bg-white" emit-value map-options label="Categoria" dense outlined v-model="product.category_id" option-value="id" option-label="name" :options="categories" hint="Selecciona una categoria"/>-->
+            <!--            <q-input type="textarea" outlined v-model="product.descripcion" label="Descripción" dense hint="Agrega una descripción del producto"/>-->
+            <!--            <q-select class="bg-white" emit-value map-options label="Agencia" dense outlined v-model="product.agencia_id" option-value="id" option-label="nombre" :options="agencias" hint="Selecciona una agencia" :rules="[val => !!val || 'Este campo es requerido']"/>-->
+            <q-btn class="full-width" rounded
+                   :color="!product.name || !product.price ? 'grey' : 'green'"
+                   :disable="!product.name || !product.price"
+                   label="Guardar" no-caps type="submit" :loading="loading"/>
+            <pre>{{buy}}</pre>
+          </q-form>
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -274,6 +299,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
   name: 'ProductosPage',
   data () {
@@ -289,6 +316,17 @@ export default {
       totalProducts: 0,
       agencias: [],
       agencia: 0,
+      buy: {
+        client_id: '',
+        product_id: '',
+        unit: '',
+        unitQuantity: 1,
+        description: '',
+        quantity: 0,
+        price: 0,
+        total: 0,
+        dateExpiration: moment().add(1, 'month').format('YYYY-MM-DD')
+      },
       product: { cantidad: 0, nombre: '', barra: '', costo: 0, precio: 0, descripcion: '', category_id: 0 },
       category: 0,
       categories: [
@@ -318,6 +356,20 @@ export default {
     this.productsGet()
   },
   methods: {
+    clickbuy (product) {
+      this.productAction = 'buy'
+      this.buy = {
+        client_id: '',
+        product_id: product.id,
+        unit: '',
+        unitQuantity: 1,
+        description: '',
+        quantity: 0,
+        price: 0,
+        total: 0,
+        dateExpiration: moment().add(1, 'month').format('YYYY-MM-DD')
+      }
+    },
     agenciasGet () {
       this.agencias = [{ nombre: 'Selecciona una agencia', id: 0 }]
       this.$axios.get('agencias').then(response => {

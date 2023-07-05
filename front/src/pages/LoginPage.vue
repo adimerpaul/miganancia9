@@ -83,6 +83,7 @@ export default {
       })
         .then(response => {
           this.$store.user = response.data.user
+          this.$store.agencia = response.data.agencia
           this.$store.agencia_id = response.data.user.agencia_id
           this.$store.isLoggedIn = true
           this.$axios.defaults.headers.common.Authorization = `Bearer ${response.data.token}`

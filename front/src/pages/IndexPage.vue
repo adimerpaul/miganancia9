@@ -89,7 +89,7 @@
           <template v-slot:body="props">
             <q-tr :props="props">
               <q-td key="options" :props="props" class="text-center" auto-width>
-                <q-btn-dropdown label="Opciones" :color="props.row.type=='Egreso'?'red':'green'" dense no-caps v-if="props.row.canceled == 'No'">
+                <q-btn-dropdown label="Opciones" :color="props.row.type=='Egreso'?'red':'green'" dense no-caps v-if="(props.row.canceled == 'No') && ($store.user.type='admin')">
                   <q-list>
                     <q-item clickable v-ripple @click="printSale(props.row)" v-close-popup>
                       <q-item-section avatar>
@@ -108,7 +108,7 @@
                 <q-avatar v-if="props.row.canceled=='Si'" size="20px" class="text-bold" color="red" text-color="white">A</q-avatar>
               </q-td>
               <q-td key="concepto" :props="props" style="max-width: 220px;overflow: auto" auto-width>
-                <q-btn icon="o_local_atm" size="15px" :color="`${props.row.tipoVenta=='Ingreso'?'green':'red'}-7`" :class="`bg-${props.row.tipoVenta=='Ingreso'?'green':'red'}-2`" dense flat />
+                <q-btn icon="o_local_atm" size="15px" :color="`${props.row.type=='Ingreso'?'green':'red'}-7`" :class="`bg-${props.row.type=='Ingreso'?'green':'red'}-2`" dense flat />
 <!--                <q-avatar  size="10px" class="text-bold text-red">A</q-avatar>-->
                 <span class="text-grey q-ml-xs">{{ props.row.description }}</span>
               </q-td>
@@ -119,7 +119,7 @@
                 {{ props.row.metodoPago }}
               </q-td>
               <q-td key="proveedorcliente" :props="props">
-                <div class="text-grey" v-if="props.row.client">{{ props.row.client.name }}</div>
+                <div class="text-grey" v-if="props.row.client">{{ props.row.clientName }}</div>
                 <div class="text-grey" v-else> "Sin cliente" </div>
               </q-td>
               <q-td key="fechayhora" :props="props">
