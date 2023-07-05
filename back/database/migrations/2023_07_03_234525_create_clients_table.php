@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
             $table->string('type')->default('client'); // 'client' or 'provider
+            $table->unsignedBigInteger('agencia_id')->nullable();
+            $table->foreign('agencia_id')->references('id')->on('agencias');
             $table->softDeletes();
             $table->timestamps();
         });

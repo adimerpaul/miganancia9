@@ -4,6 +4,7 @@ import { useCounterStore } from 'stores/example-store'
 import { Alert } from 'src/addons/Alert'
 import { Excel } from 'src/addons/Excel'
 import moment from 'moment'
+import { setCssVar } from 'quasar'
 // Be careful when using SSR for cross-request state pollution
 // due to creating a Singleton instance here;
 // If any client changes this (global) instance, it might be a
@@ -30,6 +31,8 @@ export default boot(({ app, router }) => {
   }
   app.config.globalProperties.$store = useCounterStore()
   const token = localStorage.getItem('tokenMiGanancia')
+  const agenciaColor = JSON.parse(localStorage.getItem('agencia'))
+  setCssVar('primary', agenciaColor.color)
   if (token) {
     useCounterStore().loading = true
     useCounterStore().isLoggedIn = true

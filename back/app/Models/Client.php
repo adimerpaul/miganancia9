@@ -15,5 +15,6 @@ class Client extends Model
         'phone',
         'email',
         'type',
+        'agencia_id'
     ];
 }

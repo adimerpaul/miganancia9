@@ -13,12 +13,15 @@
           <q-tooltip>Actualizar</q-tooltip>
         </q-btn>
         <q-btn color="black" no-caps flat icon="o_file_download" @click="downloadReport">
-          <div class="q-page-xs subrayado"> Descargar reporte</div>
+          <div class="q-page-xs subrayado"> Export</div>
         </q-btn>
       </div>
       <div class="col-7 col-md-3 text-right">
         <q-btn :loading="loading" color="green" rounded no-caps icon="add_circle_outline" label="Nuevo producto" @click="showAddProduct">
           <q-tooltip>Crear nuevo producto</q-tooltip>
+        </q-btn>
+        <q-btn :loading="loading" color="yellow-8" rounded no-caps icon="add_circle_outline" label="compra" @click="showAddCompra">
+          <q-tooltip>Crear nueva compra</q-tooltip>
         </q-btn>
       </div>
       <div class="col-12 col-md-6 q-pa-xs">
@@ -244,26 +247,40 @@
                    :disable="!product.name || !product.price"
                    label="Guardar" no-caps type="submit" :loading="loading"/>
           </q-form>
-          <q-form @submit="productSave" v-if="productAction === 'buy'">
-            <q-input outlined v-model="product.image" label="Imagen" dense hint="Selecciona una imagen" />
-            <q-input outlined v-model="product.amount" label="Cantidad" input-class="text-center" dense hint="">
+          <q-form @submit="buySave" v-if="productAction === 'buy'">
+            <q-select proveedor dense outlined v-model="buy.client_id" label="Proveedor"
+                      map-options emit-value option-value="id" option-label="name"
+                      :options="proveedores" hint="Proveedor del gasto">
+              <template v-slot:after>
+                <q-btn icon="add_circle_outline" color="green" flat round dense @click="providerCreate" />
+              </template>
+            </q-select>
+            <q-select proveedor dense outlined v-model="buy.product_id" label="Producto"
+                      map-options emit-value option-value="id" option-label="name"
+                      :options="productsAll" hint="Producto que compras">
+            </q-select>
+            <q-select proveedor dense outlined v-model="buy.unit" label="Unidad"
+                      :options="['Unidad', 'Caja', 'Paquete', 'Kilo', 'Litro']" hint="Unidad de medida">
+            </q-select>
+            <q-input outlined v-model="buy.amount" label="Cantidad" input-class="text-center" dense hint="">
               <template v-slot:append>
-                <q-icon name="o_add_circle_outline" @click="cantidadMore" class="cursor-pointer"/>
+                <q-icon name="o_add_circle_outline" @click="cantidadMoreBuy" class="cursor-pointer"/>
               </template>
               <template v-slot:prepend>
-                <q-icon name="o_remove_circle_outline" @click="cantidadMinus" class="cursor-pointer"/>
+                <q-icon name="o_remove_circle_outline" @click="cantidadMinusBuy" class="cursor-pointer"/>
               </template>
             </q-input>
-            <q-input outlined v-model="product.cost" label="Costo" dense hint="Valor que pagas al proveedor por el producto"/>
-            <q-input outlined v-model="product.price" label="Precio*" dense hint="Valor que le cobras a tus clientes por el producto" :rules="[val => !!val || 'Este campo es requerido']"/>
+            <q-input outlined v-model="buy.dateExpiration" label="Fecha de vencimiento" dense hint="Fecha de vencimiento del producto" type="date"/>
+            <q-input outlined type="textarea" v-model="buy.description" label="Descripción" dense hint="Descripción de la compra"/>
+<!--            <q-input outlined v-model="product.cost" label="Costo" dense hint="Valor que pagas al proveedor por el producto"/>-->
+<!--            <q-input outlined v-model="product.price" label="Precio*" dense hint="Valor que le cobras a tus clientes por el producto" :rules="[val => !!val || 'Este campo es requerido']"/>-->
             <!--            <q-select class="bg-white" emit-value map-options label="Categoria" dense outlined v-model="product.category_id" option-value="id" option-label="name" :options="categories" hint="Selecciona una categoria"/>-->
             <!--            <q-input type="textarea" outlined v-model="product.descripcion" label="Descripción" dense hint="Agrega una descripción del producto"/>-->
             <!--            <q-select class="bg-white" emit-value map-options label="Agencia" dense outlined v-model="product.agencia_id" option-value="id" option-label="nombre" :options="agencias" hint="Selecciona una agencia" :rules="[val => !!val || 'Este campo es requerido']"/>-->
             <q-btn class="full-width" rounded
-                   :color="!product.name || !product.price ? 'grey' : 'green'"
-                   :disable="!product.name || !product.price"
+                   :color="buy.amount==0 ? 'grey' : 'green'"
+                   :disable="buy.amount==0?true:false"
                    label="Guardar" no-caps type="submit" :loading="loading"/>
-            <pre>{{buy}}</pre>
           </q-form>
         </q-card-section>
       </q-card>
@@ -313,9 +330,11 @@ export default {
       categoryDialog: false,
       productAction: 'create',
       products: [],
+      productsAll: [],
       totalProducts: 0,
       agencias: [],
       agencia: 0,
+      proveedores: [],
       buy: {
         client_id: '',
         product_id: '',
@@ -351,15 +370,50 @@ export default {
     }
   },
   created () {
+    this.$axios.get('productAll').then(res => {
+      this.productsAll = res.data
+    })
     // this.categoriesGet()
     // this.agenciasGet()
     this.productsGet()
-    this.clientsGet()
+    this.providerGet()
   },
   methods: {
+    providerCreate () {
+      this.$q.dialog({
+        message: 'Crear proveedor',
+        prompt: {
+          outlined: true,
+          placeholder: 'Nombre del proveedor',
+          model: '',
+          type: 'text',
+          required: true,
+          attrs: { maxlength: 100 }
+        },
+        cancel: true,
+        ok: {
+          label: 'Crear',
+          color: 'green-4'
+        }
+      }).onOk(data => {
+        this.loading = true
+        this.$axios.post('clients', {
+          name: data,
+          type: 'Proveedor'
+        }).then(res => {
+          this.$alert.success('Proveedor creado con éxito')
+          this.providerGet()
+        }).catch(err => {
+          this.$alert.error(err.response.data.message)
+        }).finally(() => {
+          this.loading = false
+        })
+      })
+    },
     clickbuy (product) {
       this.productAction = 'buy'
       this.buy = {
+        amount: 0,
         client_id: '',
         product_id: product.id,
         unit: '',
@@ -379,9 +433,9 @@ export default {
         this.$alert.error(error.response.data.message)
       })
     },
-    clientsGet () {
-      this.$axios.get('clients?type=false').then(response => {
-        this.clients = response.data
+    providerGet () {
+      this.$axios.get('clients?type=Proveedor').then(response => {
+        this.proveedores = response.data
       }).catch(error => {
         this.$alert.error(error.response.data.message)
       })
@@ -467,6 +521,19 @@ export default {
         })
       })
     },
+    buySave () {
+      this.loading = true
+      this.$axios.post('buys', this.buy).then(res => {
+        this.loading = false
+        this.productDialog = false
+        this.productsGet()
+        this.$alert.success('Compra realizada con éxito')
+      }).catch(err => {
+        this.loading = false
+        console.log(err)
+        this.$alert.error(err.response.data.message)
+      })
+    },
     productSave () {
       this.loading = true
       if (this.productAction === 'create') {
@@ -507,12 +574,20 @@ export default {
       })
     },
     cantidadMinus () {
-      if (this.product.cantidad > 0) {
-        this.product.cantidad--
+      if (this.product.amount > 0) {
+        this.product.amount--
       }
     },
     cantidadMore () {
-      this.product.cantidad++
+      this.product.amount++
+    },
+    cantidadMoreBuy () {
+      this.buy.amount++
+    },
+    cantidadMinusBuy () {
+      if (this.buy.amount > 0) {
+        this.buy.amount--
+      }
     },
     uploadingFn (e) {
       e.xhr.onload = () => {
@@ -532,6 +607,22 @@ export default {
       this.product = product
       this.productDialog = true
       this.productAction = 'ver'
+    },
+    showAddCompra () {
+      this.productDialog = true
+      this.productAction = 'buy'
+      this.buy = {
+        amount: 0,
+        client_id: '',
+        product_id: '',
+        unit: '',
+        unitQuantity: 1,
+        description: '',
+        quantity: 0,
+        price: 0,
+        total: 0,
+        dateExpiration: moment().add(1, 'month').format('YYYY-MM-DD')
+      }
     },
     showAddProduct () {
       this.productAction = 'create'

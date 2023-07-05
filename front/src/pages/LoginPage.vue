@@ -59,6 +59,8 @@
 </template>
 
 <script>
+import { setCssVar } from 'quasar'
+
 export default {
   name: 'LoginPage',
   data () {
@@ -84,7 +86,8 @@ export default {
         .then(response => {
           this.$store.user = response.data.user
           this.$store.agencia = response.data.agencia
-          this.$store.agencia_id = response.data.user.agencia_id
+          setCssVar('primary', this.$store.agencia.color)
+          // this.$store.agencia_id = response.data.user.agencia_id
           this.$store.isLoggedIn = true
           this.$axios.defaults.headers.common.Authorization = `Bearer ${response.data.token}`
           localStorage.setItem('tokenMiGanancia', response.data.token)

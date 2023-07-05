@@ -89,7 +89,8 @@
           <template v-slot:body="props">
             <q-tr :props="props">
               <q-td key="options" :props="props" class="text-center" auto-width>
-                <q-btn-dropdown label="Opciones" :color="props.row.type=='Egreso'?'red':'green'" dense no-caps v-if="(props.row.canceled == 'No') && ($store.user.type='admin')">
+                <q-btn-dropdown label="Opciones" :color="props.row.type=='Egreso'?'red':'green'" dense no-caps
+                                v-if="(props.row.canceled == 'No') && ($store.user.type=='admin')">
                   <q-list>
                     <q-item clickable v-ripple @click="printSale(props.row)" v-close-popup>
                       <q-item-section avatar>
@@ -127,6 +128,15 @@
               </q-td>
               <q-td key="egresoingreso" :props="props">
                 <q-chip :color="`${props.row.type=='Ingreso'?'green':'red'}-5`" text-color="white" dense flat :label="props.row.type"/>
+              </q-td>
+              <q-td key="reservation" :props="props" auto-width>
+                <q-chip :color="`${props.row.reservation=='Si'?'green':'red'}-5`" text-color="white" dense flat :label="props.row.reservation"/>
+              </q-td>
+              <q-td key="paraLlevar" :props="props" auto-width>
+                <q-chip :color="`${props.row.paraLlevar=='Si'?'green':'red'}-5`" text-color="white" dense flat :label="props.row.paraLlevar"/>
+              </q-td>
+              <q-td key="delivery" :props="props" auto-width>
+                <q-chip :color="`${props.row.delivery=='Si'?'green':'red'}-5`" text-color="white" dense flat :label="props.row.delivery"/>
               </q-td>
             </q-tr>
           </template>
@@ -190,7 +200,10 @@ export default {
         // { name: 'metodoPago', label: 'Metodo de pago', align: 'left', field: 'metodoPago', sortable: true },
         { name: 'proveedorcliente', label: 'Proveedor / cliente', align: 'left', field: 'proveedor / cliente', sortable: true },
         { name: 'fechayhora', label: 'Fecha y hora', align: 'left', field: 'fechayhora', sortable: true },
-        { name: 'egresoingreso', label: 'Egreso / ingreso', align: 'left', field: 'egreso / ingreso', sortable: true }
+        { name: 'egresoingreso', label: 'Egreso / ingreso', align: 'left', field: 'egreso / ingreso', sortable: true },
+        { name: 'reservation', label: 'Reservación', align: 'left', field: 'reservation', sortable: true },
+        { name: 'paraLlevar', label: 'Para llevar', align: 'left', field: 'paraLlevar', sortable: true },
+        { name: 'delivery', label: 'Delivery', align: 'left', field: 'delivery', sortable: true }
       ],
       proveedores: []
     }
@@ -282,19 +295,28 @@ export default {
         {
           columns: [
             { value: 'id', label: 'ID' },
-            { value: 'nombre', label: 'Nombre' },
-            { value: 'barra', label: 'Código de barras' },
-            { value: 'cantidad', label: 'Cantidad' },
-            { value: 'costo', label: 'Costo' },
-            { value: 'precio', label: 'Precio' },
-            { value: 'activo', label: 'Activo' },
-            { value: 'imagen', label: 'Imagen' },
-            { value: 'descripcion', label: 'Descripción' },
-            // { label: 'User', value: 'user' }, // Top level data
-            // { label: 'Age', value: (row) => row.age + 'years' }, // Custom format
-            { label: 'Categoria', value: (row) => (row.category ? row.category.name || '' : '') } // Run functions
+            { value: 'description', label: 'Descripción' },
+            { value: 'type', label: 'Tipo' },
+            { value: 'paraLlevar', label: 'Para llevar' },
+            { value: 'delivery', label: 'Delivery' },
+            { value: 'reservation', label: 'Reservación' },
+            { value: 'canceled', label: 'Anulado' },
+            { value: 'canceledBy', label: 'Anulado por' },
+            { value: 'total', label: 'Total' },
+            { value: 'dateTime', label: 'Fecha' }
+            // { value: 'nombre', label: 'Nombre' },
+            // { value: 'barra', label: 'Código de barras' },
+            // { value: 'cantidad', label: 'Cantidad' },
+            // { value: 'costo', label: 'Costo' },
+            // { value: 'precio', label: 'Precio' },
+            // { value: 'activo', label: 'Activo' },
+            // { value: 'imagen', label: 'Imagen' },
+            // { value: 'descripcion', label: 'Descripción' },
+            // // { label: 'User', value: 'user' }, // Top level data
+            // // { label: 'Age', value: (row) => row.age + 'years' }, // Custom format
+            // { label: 'Categoria', value: (row) => (row.category ? row.category.name || '' : '') } // Run functions
           ],
-          content: this.products
+          content: this.sales
         }
       ]
       this.$excel.export(data)

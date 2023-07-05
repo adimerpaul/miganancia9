@@ -21,7 +21,7 @@ class AgenciaSeeder extends Seeder
                 'email'=>"",
                 'web'=>"",
                 'logo'=>"348565664_261697269693249_544105869248815807_n.jpg",
-                'color'=>"#006A4C",
+                'color'=>"#006c1e",
             ]
         ]);
     }

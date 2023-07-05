@@ -12,6 +12,7 @@ class Buy extends Model
     protected $fillable=[
         'client_id',
         'product_id',
+        'agencia_id',
         'unit',
         'description',
         'unitQuantity',
@@ -23,4 +24,13 @@ class Buy extends Model
         'canceled',
         'canceledBy',
     ];
+    public function client(){
+        return $this->belongsTo(Client::class);
+    }
+    public function product(){
+        return $this->belongsTo(Product::class);
+    }
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

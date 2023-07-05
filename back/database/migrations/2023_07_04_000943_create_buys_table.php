@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreign('client_id')->references('id')->on('clients');
             $table->unsignedBigInteger('product_id')->nullable();
             $table->foreign('product_id')->references('id')->on('products');
+            $table->unsignedBigInteger('agencia_id')->nullable();
+            $table->foreign('agencia_id')->references('id')->on('agencias');
             $table->string('unit')->nullable()->default('Unidad');
             $table->string('unitQuantity')->nullable()->default('1');
             $table->string('description')->nullable();
@@ -27,6 +29,7 @@ return new class extends Migration
             $table->date('dateExpiration')->nullable();
             $table->string('canceled')->default('No');
             $table->string('canceledBy')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

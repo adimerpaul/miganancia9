@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller{
-    public function index(){
+    public function index(Request $request){
         $search = request()->get('search', '');
         $search = $search == 'null' ? '' : $search;
         $ordenar = request()->get('order', 'id');
@@ -17,9 +19,11 @@ class ProductController extends Controller{
         $paginate = request()->get('paginate', 30);
 //        if ($category_id == 0 && $agencia_id == 0){
         $products = Product::where('name', 'like', "%$search%")
+            ->where('agencia_id', $request->user()->agencia_id)
             ->orderByRaw($ordenar)
             ->paginate($paginate);
             $costoRow=Product::select(DB::raw('sum(cost*amount)'))
+                ->where('agencia_id', $request->user()->agencia_id)
                 ->where('name', 'like', "%$search%")
                 ->first();
             $costoTotal=$costoRow["sum(cost*amount)"]==null?0:$costoRow["sum(cost*amount)"];
@@ -59,6 +63,9 @@ class ProductController extends Controller{
 //            }
 //        }
         return json_encode(['products' => $products, 'costoTotal' => $costoTotal]);
+    }
+    public function productAll(Request $request){
+        return Product::where('agencia_id', $request->user()->agencia_id)->get();
     }
     public function store(StoreProductRequest $request){
 //        if ($request->category_id == 0) $request->merge(['category_id' => null]);

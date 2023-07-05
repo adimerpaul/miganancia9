@@ -3,6 +3,7 @@ import MainLayout from 'layouts/MainLayout.vue'
 import IndexPage from 'pages/IndexPage.vue'
 import ProductosPage from 'pages/ProductosPage.vue'
 import SalePage from 'pages/SalePage.vue'
+import ProductosPorVencer from 'pages/productosPorVencer.vue'
 
 const routes = [
   {
@@ -11,7 +12,8 @@ const routes = [
     children: [
       { path: '', component: IndexPage, meta: { requiresAuth: true } },
       { path: 'productos', component: ProductosPage, meta: { requiresAuth: true } },
-      { path: 'sale', component: SalePage, meta: { requiresAuth: true } }
+      { path: 'sale', component: SalePage, meta: { requiresAuth: true } },
+      { path: 'productosPorVencer', component: ProductosPorVencer, meta: { requiresAuth: true } }
     ]
   },
   {

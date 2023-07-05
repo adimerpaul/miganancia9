@@ -122,7 +122,7 @@
                 </q-tooltip>
               </q-item-section>
             </q-item>
-            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/productosPorCencer">
+            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/productosPorVencer">
               <q-item-section avatar><q-icon name="o_store" /></q-item-section>
               <q-item-section>
                 <q-item-label>Por cencer</q-item-label>
