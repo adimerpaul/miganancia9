@@ -26,6 +26,13 @@ class SaleController extends Controller{
             $numeroGasto = Sale::where('type','Egreso')->count();
             $request->concepto = 'Gasto '.($numeroGasto+1);
         }
+        if ($request->client_id == 0){
+            $request->merge(['client_id'=>null]);
+            $request->merge(['client'=>['name'=>'SN']]);
+        }else{
+            $client = Client::find($request->client_id);
+            $request->merge(['client'=>['name'=>$client->name]]);
+        }
         $sales = new Sale();
         $sales->date = date('Y-m-d');
         $sales->time = date('H:i:s');
@@ -34,8 +41,10 @@ class SaleController extends Controller{
         $sales->description = $request->concepto;
         $sales->type = 'Egreso';
         $sales->client_id = $request->client_id==0?null:$request->client_id;
+        $sales->clientName = strtoupper($request->client['name']);
         $sales->user_id = $request->user()->id;
         $sales->agencia_id = $request->user()->agencia_id;
+
         $sales->save();
 
         $detail = new Detail();
@@ -48,6 +57,7 @@ class SaleController extends Controller{
         $detail->productName = $request->concepto;
 
         $detail->save();
+        return $sales->with(['details','client','user'])->find($sales->id);
 
     }
     public function update(UpdateSaleRequest $request, $id){
@@ -69,6 +79,11 @@ class SaleController extends Controller{
         $sales->time = date('H:i:s');
         $sales->datetime = date('Y-m-d H:i:s');
         $sales->type = 'Ingreso';
+        $sales->reservation = $request->reservation;
+        $sales->paraLlevar = $request->paraLlevar;
+        $sales->delivery = $request->delivery;
+        $sales->deliveryAddress = $request->deliveryAddress;
+        $sales->deliveryCost = $request->deliveryCost;
 
 //        $sales->usuario = $request->user()->name;
 //        $sales->venta = 'R';
@@ -80,7 +95,7 @@ class SaleController extends Controller{
         $concepto = "";
         foreach ($request->products as $product){
             $productSale= Product::find($product['id']);
-//            $productSale->cantidad = $productSale->cantidad - $product['cantidadPedida'];
+            $productSale->amount = $productSale->amount - $product['cantidadPedida'];
             $productSale->save();
 
             $detail = new Detail();
@@ -93,6 +108,17 @@ class SaleController extends Controller{
             $detail->productName = $product['name'];
             $detail->save();
             $concepto .= $product['cantidadPedida'].$product['name'].',';
+        }
+        if ($request->deliveryCost > 0){
+            $detail = new Detail();
+            $detail->sale_id = $sales->id;
+            $detail->user_id = $request->user()->id;
+            $detail->product_id = null;
+            $detail->price = $request->deliveryCost;
+            $detail->quantity = 1;
+            $detail->total = $request->deliveryCost;
+            $detail->productName = 'COSTO DE ENVIO';
+            $detail->save();
         }
         $sales->description = substr($concepto,0,-1);
         $sales->save();

@@ -7,11 +7,15 @@ import moment from 'moment'
 export class Imprimir {
   static facturaPdf (sale) {
     console.log(sale)
+    let distenceLength = 65
+    if (sale.delyvery === 'Si') {
+      distenceLength = 75
+    }
     /* eslint-disable */
     const doc = new jsPDF({
       // orientation: 'l',
       unit: 'mm',
-      format: [65+4*sale.details.length, 55]
+      format: [distenceLength+4*sale.details.length, 55]
     })
     let y = 5
     doc.setFont('courier', 'bold')
@@ -20,9 +24,9 @@ export class Imprimir {
     doc.setFont(undefined, 'normal')
     // doc.text(useCounterStore().agencia.nit, 28, y+4, { align: 'center' })
     doc.text(useCounterStore().agencia.direccion, 28, y+8, { align: 'center', maxWidth: 50 })
-    doc.text(useCounterStore().agencia.telefono, 28, y+16, { align: 'center' })
+    doc.text('Tel '+useCounterStore().agencia.telefono, 28, y+16, { align: 'center' })
     doc.setFont(undefined, 'bold')
-    doc.text('Sucursal 0', 28, y+20, { align: 'center' })
+    doc.text(sale.paraLlevar=='Si' ? 'Para llevar' : 'En mesa', 28, y+20, { align: 'center' })
     doc.line(5, y+22, 50, y+22)
 
     doc.setFontSize(9)
@@ -61,7 +65,7 @@ export class Imprimir {
     doc.setFont(undefined, 'normal')
     const nameSplit = useCounterStore().user.name.split(' ')
     doc.text(nameSplit[0], 50, y+8, { align: 'right', maxWidth: 50 })
-
+    doc.text(sale.deliveryAddress==null?'':sale.deliveryAddress, 28, y+12, { align: 'center', maxWidth: 50 })
     doc.save(`sale-${sale.id}${moment().format('YYYYMMDDHHmmss')}.pdf`)
     // doc.autoPrint();
     // doc.output('dataurlnewwindow', {filename: 'comprobante.pdf'});

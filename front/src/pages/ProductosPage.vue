@@ -354,6 +354,7 @@ export default {
     // this.categoriesGet()
     // this.agenciasGet()
     this.productsGet()
+    this.clientsGet()
   },
   methods: {
     clickbuy (product) {
@@ -374,6 +375,13 @@ export default {
       this.agencias = [{ nombre: 'Selecciona una agencia', id: 0 }]
       this.$axios.get('agencias').then(response => {
         this.agencias = this.agencias.concat(response.data)
+      }).catch(error => {
+        this.$alert.error(error.response.data.message)
+      })
+    },
+    clientsGet () {
+      this.$axios.get('clients?type=false').then(response => {
+        this.clients = response.data
       }).catch(error => {
         this.$alert.error(error.response.data.message)
       })

@@ -26,6 +26,11 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('canceled')->default('No');
             $table->string('canceledBy')->nullable();
+            $table->string('reservation')->default('No');
+            $table->string('paraLlevar')->default('No');
+            $table->string('delivery')->default('No');
+            $table->string('deliveryAddress')->nullable();
+            $table->string('deliveryCost')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

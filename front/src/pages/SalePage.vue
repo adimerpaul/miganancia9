@@ -113,7 +113,7 @@
                         </div>
                         <div class="col-9">
                           <div class="text-bold">{{props.row.name}}</div>
-<!--                          <div class="text-grey">Disponible: {{props.row.cantidad}}</div>-->
+                          <div class="text-grey">Disponible: {{props.row.amount}}</div>
                           <div>
                             <div class="row">
                               <div class="col-8">
@@ -133,7 +133,9 @@
                       </div>
                     </q-td>
                     <q-td key="cantidadVenta" :props="props">
-                      <q-input dense outlined bottom-slots min="1" v-model="props.row.cantidadVenta" @update:model-value="cambioNumero(props.row,props.pageIndex)" :rules="ruleNumber" type="number" input-class="text-center" required>
+                      <q-input dense outlined bottom-slots min="1" v-model="props.row.cantidadVenta" @update:model-value="cambioNumero(props.row,props.pageIndex)"
+                               :rules="[val => val > 0 || 'Cantidad debe ser mayor a 0',val => val <= props.row.cantidadReal || 'Cantidad debe ser menor o igual a la disponible']"
+                               type="number" input-class="text-center" required>
                         <template v-slot:prepend>
                           <q-icon style="cursor: pointer" name="remove_circle_outline" @click="removeCantidad(props.row,props.pageIndex)"/>
                         </template>
@@ -216,6 +218,21 @@
               <div class="col-12 col-md-3">
                 <q-input outlined dense label="Celular" v-model="client.phone" />
               </div>
+              <div class="col-4 text-center">
+                <q-toggle v-model="reservation" class="text-bold" dense :label="`Reservar: ${reservation}`" false-value="No" true-value="Si" />
+              </div>
+              <div class="col-4 text-center">
+                <q-toggle v-model="paraLlevar" class="text-bold" dense :label="`Para llevar: ${paraLlevar}`" false-value="No" true-value="Si" />
+              </div>
+              <div class="col-4 text-center">
+                <q-toggle v-model="delivery" class="text-bold" dense :label="`Delivery: ${delivery}`" false-value="No" true-value="Si" />
+              </div>
+              <div class="col-6" v-if="delivery=='Si'">
+                <q-input outlined dense v-model="deliveryAddress" label="Dirección" />
+              </div>
+              <div class="col-6" v-if="delivery=='Si'">
+                <q-input outlined dense v-model="deliveryCost" label="Costo" />
+              </div>
             </div>
           </q-card-section>
           <q-separator/>
@@ -292,6 +309,11 @@ export default {
         val => (val >= 0 && val < 10000) || 'Por favor escriba una cantidad real'
       ],
       search: '',
+      reservation: 'No',
+      paraLlevar: 'No',
+      delivery: 'No',
+      deliveryAddress: '',
+      deliveryCost: 0,
       efectivo: '',
       loading: false,
       products: [],
@@ -351,7 +373,12 @@ export default {
         qr: this.qr,
         efectivo: this.efectivo,
         products: this.$store.productosVenta,
-        metodoPago: this.metodoPago
+        metodoPago: this.metodoPago,
+        delivery: this.delivery,
+        deliveryAddress: this.deliveryAddress,
+        deliveryCost: this.deliveryCost,
+        reservation: this.reservation,
+        paraLlevar: this.paraLlevar
       }
       this.$axios.post('sales', data).then(res => {
         this.loading = false
@@ -366,15 +393,14 @@ export default {
           p.cantidadPedida = 0
         })
         this.totalProducts = 0
+        this.productsGet()
         Imprimir.facturaPdf(res.data)
+      }).finally(() => {
+        this.loading = false
+      }).catch(err => {
+        this.loading = false
+        this.$alert.error(err.response.data.message)
       })
-        .finally(() => {
-          this.loading = false
-        })
-      //   .catch(err => {
-      //   this.loading = false
-      //   this.$alert.error(err.response.data.message)
-      // })
     },
     clientSearch () {
       this.$axios.post('searchClient', this.client).then(res => {
@@ -403,6 +429,11 @@ export default {
       }
     },
     clickSale () {
+      this.reservation = 'No'
+      this.paraLlevar = 'No'
+      this.delivery = 'No'
+      this.deliveryAddress = ''
+      this.deliveryCost = 0
       this.saleDialog = true
       this.aporte = false
       this.efectivo = ''
@@ -423,23 +454,24 @@ export default {
       return Math.round(n * 100) / 100
     },
     addCantidad (n, i) {
-      n.cantidad--
+      n.amount--
       n.cantidadPedida++
       n.cantidadVenta = parseInt(n.cantidadVenta) + 1
     },
     cambioNumero (n, i) {
+      console.log(n.cantidadVenta)
       if (n.cantidadVenta !== '') {
-        n.cantidad = parseInt(n.cantidadReal) - parseInt(n.cantidadVenta)
+        n.amount = parseInt(n.cantidadReal) - parseInt(n.cantidadVenta)
         n.cantidadPedida = parseInt(n.cantidadVenta)
       }
       if (n.cantidadVenta === 0) {
-        n.cantidad = parseInt(n.cantidadReal) - 1
+        n.amount = parseInt(n.cantidadReal) - 1
         n.cantidadVenta = 1
         n.cantidadPedida = 1
       }
     },
     removeCantidad (n, i) {
-      n.cantidad++
+      n.amount++
       n.cantidadPedida--
       if (n.cantidadVenta > 1) {
         n.cantidadVenta = parseInt(n.cantidadVenta) - 1
@@ -454,21 +486,23 @@ export default {
       p.cantidadPedida = 0
     },
     async vaciarCanasta () {
-      await this.$store.productosVenta.forEach(p => {
-        p.cantidad = p.cantidadReal
-        p.cantidadVenta = 0
-        p.cantidadPedida = 0
-      })
+      // await this.$store.productosVenta.forEach(p => {
+      //   p.amount = p.cantidadReal
+      //   p.cantidadVenta = 0
+      //   p.cantidadPedida = 0
+      // })
+      this.productsGet()
       this.$store.productosVenta = []
     },
     clickAddSale (product) {
-      product.cantidad--
+      product.amount--
       product.cantidadPedida++
       const productVenta = this.$store.productosVenta.find(p => p.id === product.id)
       if (productVenta) {
         productVenta.cantidadVenta++
       } else {
         product.cantidadVenta = 1
+        product.cantidadReal = product.amount
         this.$store.productosVenta.push(product)
       }
     },
@@ -483,7 +517,7 @@ export default {
     },
     productsGet () {
       this.loading = true
-      this.products = []
+      // this.products = []
       this.$axios.get(`products?page=${this.current_page}&search=${this.search}&order=${this.order}&category=${this.category}&agencia=${this.$store.agencia_id}`).then(res => {
         this.loading = false
         // console.log(res.data.products)
@@ -492,6 +526,7 @@ export default {
         // console.log(this.products)
         this.last_page = res.data.products.last_page
         this.current_page = res.data.products.current_page
+        this.products = []
         this.costoTotalProducts = parseFloat(res.data.costoTotal).toFixed(2)
         res.data.products.data.forEach(p => {
           p.cantidadPedida = 0

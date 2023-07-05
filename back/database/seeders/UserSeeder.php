@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name'=> 'Vendedor',
-                'nickname'=> 'Buenvendero',
+                'nickname'=> 'Buenvendedor',
                 'password'=> bcrypt('buen123'),
                 'type'=> 'user',
                 'agencia_id'=> 1

@@ -315,11 +315,16 @@ export default {
         this.loading = false
         this.dialogSale = false
         this.salesGet()
+        Imprimir.facturaPdf(res.data)
         this.$alert.success('Gasto agregado correctamente')
-      }).catch(err => {
-        this.loading = false
-        this.$alert.error(err.response.data.message)
       })
+        .finally(() => {
+          this.loading = false
+        })
+      //   .catch(err => {
+      //   this.loading = false
+      //   this.$alert.error(err.response.data.message)
+      // })
     },
     saleAddGasto () {
       this.sale = { client_id: 0, montoTotal: '', concepto: '', metodoPago: 'Efectivo' }

@@ -21,6 +21,11 @@ class Sale extends Model
         'canceled',
         'canceledBy',
         'clientName',
+        'reservation',
+        'paraLlevar',
+        'delivery',
+        'deliveryAddress',
+        'deliveryCost',
     ];
     public function details(){
         return $this->hasMany(Detail::class);
