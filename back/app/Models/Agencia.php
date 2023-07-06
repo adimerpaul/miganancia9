@@ -17,4 +17,13 @@ class Agencia extends Model
         'logo',
         'color',
     ];
+    public function users(){
+        return $this->hasMany(User::class);
+    }
+    public function clientes(){
+        return $this->hasMany(Client::class);
+    }
+    public function products(){
+        return $this->hasMany(Product::class);
+    }
 }

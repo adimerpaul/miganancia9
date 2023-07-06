@@ -34,9 +34,9 @@ export default boot(({ app, router }) => {
   }
   app.config.globalProperties.$store = useCounterStore()
   const token = localStorage.getItem('tokenMiGanancia')
-  const agenciaColor = JSON.parse(localStorage.getItem('agencia'))
-  setCssVar('primary', agenciaColor.color)
+  const agenia = JSON.parse(localStorage.getItem('agencia'))
   if (token) {
+    setCssVar('primary', agenia.color)
     useCounterStore().loading = true
     useCounterStore().isLoggedIn = true
     app.config.globalProperties.$axios.defaults.headers.common.Authorization = `Bearer ${token}`

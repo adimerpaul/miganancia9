@@ -19,7 +19,7 @@ class AgenciaSeeder extends Seeder
                 'direccion'=>"Urbanizacion HUAJARA II",
                 'telefono'=>"73847194",
                 'email'=>"",
-                'web'=>"",
+                'web'=>"buensazonoruro",
                 'logo'=>"348565664_261697269693249_544105869248815807_n.jpg",
                 'color'=>"#006c1e",
             ]

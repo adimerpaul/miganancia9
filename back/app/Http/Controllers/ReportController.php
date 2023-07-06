@@ -14,6 +14,7 @@ class ReportController extends Controller
             ->join('products', 'products.id', '=', 'details.product_id')
             ->whereBetween('sales.date', [$request->dateIni, $request->dateFin])
             ->where('sales.agencia_id', $request->user()->agencia_id)
+            ->where('sales.canceled', 'No')
             ->groupBy('products.name')
             ->get();
     }

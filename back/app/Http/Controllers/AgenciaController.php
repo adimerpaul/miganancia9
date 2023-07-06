@@ -5,62 +5,28 @@ namespace App\Http\Controllers;
 use App\Models\Agencia;
 use App\Http\Requests\StoreAgenciaRequest;
 use App\Http\Requests\UpdateAgenciaRequest;
+use App\Models\Product;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
-class AgenciaController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
+class AgenciaController extends Controller{
+    public function index(){}
+    public function agenciaWebSearch($web){
+        $agencia = Agencia::where('web',$web)->first();
+        if ($agencia){
+            return $agencia;
+        }
+        return response()->json(['message'=>'Agencia no encontrada'],404);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreAgenciaRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Agencia $agencia)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Agencia $agencia)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateAgenciaRequest $request, Agencia $agencia)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Agencia $agencia)
-    {
-        //
+    public function agenciaProducts(Request $request){
+        $search = request()->get('search', '');
+        $search = $search == 'null' ? '' : $search;
+        $ordenar = request()->get('order', 'id');
+        $paginate = request()->get('paginate', 60);
+        $products = Product::where('name', 'like', "%$search%")
+            ->where('agencia_id', $request->agencia_id)
+            ->orderByRaw($ordenar)
+            ->paginate($paginate);
+        return json_encode(['products' => $products]);
     }
 }

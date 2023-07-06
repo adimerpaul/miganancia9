@@ -5,6 +5,7 @@ import ProductosPage from 'pages/ProductosPage.vue'
 import SalePage from 'pages/SalePage.vue'
 import ProductosPorVencer from 'pages/productosPorVencer.vue'
 import EstadisticasPage from 'pages/EstadisticasPage.vue'
+import PedidoLayout from 'layouts/PedidoLayout.vue'
 
 const routes = [
   {
@@ -18,6 +19,7 @@ const routes = [
       { path: 'estadisticas', component: EstadisticasPage, meta: { requiresAuth: true } }
     ]
   },
+  { path: '/:tienda', component: PedidoLayout },
   {
     path: '/login',
     component: LoginPage

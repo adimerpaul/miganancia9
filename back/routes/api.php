@@ -31,3 +31,5 @@ Route::group(['middleware'=>'auth:sanctum'],function () {
     Route::post('/searchClient', [\App\Http\Controllers\ClientController::class,'searchClient']);
     Route::post('/saleProduct', [\App\Http\Controllers\ReportController::class,'saleProduct']);
 });
+Route::get('agenciaWebSearch/{web}', [\App\Http\Controllers\AgenciaController::class, 'agenciaWebSearch']);
+Route::get('agenciaProducts', [\App\Http\Controllers\AgenciaController::class, 'agenciaProducts']);
