@@ -29,4 +29,5 @@ Route::group(['middleware'=>'auth:sanctum'],function () {
     Route::get('productAll', [\App\Http\Controllers\ProductController::class, 'productAll']);
     Route::post('salesGasto', [\App\Http\Controllers\SaleController::class, 'salesGasto']);
     Route::post('/searchClient', [\App\Http\Controllers\ClientController::class,'searchClient']);
+    Route::post('/saleProduct', [\App\Http\Controllers\ReportController::class,'saleProduct']);
 });

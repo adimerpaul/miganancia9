@@ -131,6 +131,15 @@
                 </q-tooltip>
               </q-item-section>
             </q-item>
+            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/estadisticas">
+              <q-item-section avatar><q-icon name="o_stacked_bar_chart" /></q-item-section>
+              <q-item-section>
+                <q-item-label>Estadisticas</q-item-label>
+                <q-tooltip anchor="top middle" self="bottom middle">
+                  Estadisticas
+                </q-tooltip>
+              </q-item-section>
+            </q-item>
           </q-list>
         </q-header>
         <q-footer class="bg-white">
