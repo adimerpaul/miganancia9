@@ -21,9 +21,10 @@
         <div>
           <q-btn
             icon="o_shopping_cart"
-            color="grey-4"
-            text-color="grey"
-            label="0"
+            :color="cantidadTotalPedida==0?'grey-4':'yellow-7'"
+            text-color="black"
+            class="text-bold"
+            :label="cantidadTotalPedida"
           />
         </div>
       </q-toolbar>
@@ -39,7 +40,7 @@
               </template>
             </q-input>
           </div>
-          <div class="col-10 col-md-5">
+          <div class="col-8 col-md-5">
             <q-select class="bg-white" label="Ordenar" dense outlined v-model="order"
                       :options="orders" map-options emit-value
                       option-value="value" option-label="label"
@@ -47,13 +48,17 @@
                       :loading="loading"
             />
           </div>
-          <div class="col-2 col-md-1 flex flex-center">
-            <q-btn :loading="loading" icon="refresh" dense color="grey-7" flat @click="productsGet">
+          <div class="col-4 col-md-1 flex flex-center">
+            <q-btn :loading="loading" icon="refresh" dense color="grey" flat @click="productsGet">
               <q-tooltip>Actualizar</q-tooltip>
+            </q-btn>
+            <q-btn :loading="loading" icon="o_delete" dense color="red" flat @click="clearSearch">
+              <q-tooltip>Limpiar</q-tooltip>
             </q-btn>
           </div>
           <div class="col-12 flex flex-center">
             <q-pagination
+              v-if="total>60"
               v-model="current_page"
               :max="last_page"
               :max-pages="6"
@@ -62,11 +67,11 @@
             />
           </div>
           <div class="col-12">
-            <q-card>
-              <q-card-section class="q-pa-xs">
+            <q-card flat>
+              <q-card-section :class="$q.screen.lt.md?'q-pa-xs':'q-pa-md'">
                 <div class="row cursor-pointer" v-if="products.length>0">
                   <div class="col-4 col-md-2" v-for="p in products" :key="p.id">
-                    <q-card  flat bordered :class="$q.screen.lt.md?'q-pa-xs':'q-pa-sm'" style="border-radius: 10px;">
+                    <q-card  flat :class="$q.screen.lt.md?'q-pa-xs':'q-pa-sm'" style="border-radius: 10px;">
                       <q-img @click="clickDetalleProducto(p)" :src="p.image.includes('http')?p.image:`${$url}../images/${p.image}`" :ratio="1">
                         <div class="absolute-bottom text-center text-subtitle2" style="padding: 0px;">
                           {{p.name}}
@@ -75,17 +80,20 @@
                       </q-img>
                       <q-card-section class="q-pa-none q-ma-none">
                         <div class="text-center text-subtitle2 text-bold">{{ p.price }} Bs</div>
-                        <q-input v-model="p.cantidadPedida" dense input-class="text-center"
+                        <q-btn v-if="p.cantidadPedida==0" @click="moreCantidad(p)" dense flat  class="full-width" icon="o_add_circle_outline" color="grey" no-caps label="Agregar">
+                          <q-tooltip>Comprar</q-tooltip>
+                        </q-btn>
+                        <q-input v-else v-model="p.cantidadPedida" dense input-class="text-center"
                                  mask="#" fill-mask="0" reverse-fill-mask outlined
                         >
                           <template v-slot:prepend>
-                            <q-icon name="o_remove_circle_outline" flat />
+                            <q-icon :name="p.cantidadPedida==1?'o_delete':'o_remove_circle_outline'" :color="p.cantidadPedida==1?'red':''" class="cursor-pointer" flat @click="minusCantidad(p)" />
                           </template>
                           <template v-slot:append>
-                            <q-icon name="o_add_circle_outline" flat />
+                            <q-icon name="o_add_circle_outline" class="cursor-pointer" flat @click="moreCantidad(p)" />
                           </template>
                         </q-input>
-                        <pre>{{p}}</pre>
+<!--                        <pre>{{p}}</pre>-->
                       </q-card-section>
                     </q-card>
                   </div>
@@ -173,14 +181,27 @@
               <div class="col-12 text-grey q-pa-xs">
                 {{ product.descripcion}}
               </div>
-              <div class="col-12">
-                <q-btn :loading="loading" icon="o_shopping_cart" label="Comprar" rounded dense color="green" @click="clickbuy(product)" no-caps class="full-width q-mt-xs" />
-              </div>
+<!--              <div class="col-12">-->
+<!--                <q-btn :loading="loading" icon="o_shopping_cart" label="Comprar" rounded dense color="green" @click="clickbuy(product)" no-caps class="full-width q-mt-xs" />-->
+<!--              </div>-->
             </div>
           </q-form>
         </q-card-section>
       </q-card>
     </q-dialog>
+    <q-dialog v-model="saleDialog" position="right" maximized>
+    </q-dialog>
+<!--    v-if="saleDetails.length>0"-->
+      <q-btn rounded class="btn-fixed-width full-width text-bold" no-caps
+             style="position: fixed; bottom: 20px; right: 0px; z-index: 9999;"
+             color="yellow-7" text-color="black" v-if="saleDetails.length>0"
+             align="around" >
+          <div class="fit row wrap justify-between">
+          <div><q-chip color="white" rounded :label="cantidadTotalPedida" text-color="black" icon="o_shopping_cart" /></div>
+          <div class="flex flex-center">Ir al carrito de compras</div>
+          <div class="flex flex-center">Bs {{ totalVenta }}</div>
+        </div>
+      </q-btn>
   </q-layout>
 </template>
 <script>
@@ -191,6 +212,7 @@ export default {
     return {
       user: {},
       current_page: 1,
+      total: 0,
       search: '',
       last_page: 1,
       agencia: {},
@@ -200,7 +222,9 @@ export default {
       products: [],
       product: {},
       productDialog: false,
+      saleDialog: false,
       productAction: '',
+      saleDetails: [],
       orders: [
         { label: 'Ordenar por', value: 'id' },
         { label: 'Menor precio', value: 'price asc' },
@@ -224,10 +248,49 @@ export default {
     })
   },
   methods: {
+    minusCantidad (product) {
+      if (product.cantidadPedida > 0) {
+        product.cantidadPedida--
+        const find = this.saleDetails.find(p => p.id === product.id)
+        if (find) {
+          find.cantidad--
+          if (find.cantidad <= 0) {
+            const index = this.saleDetails.findIndex(p => p.id === product.id)
+            this.saleDetails.splice(index, 1)
+          }
+        }
+      }
+    },
+    moreCantidad (product) {
+      product.cantidadPedida++
+      const find = this.saleDetails.find(p => p.id === product.id)
+      if (find) {
+        find.cantidad++
+      } else {
+        this.saleDetails.push({
+          id: product.id,
+          cantidad: 1,
+          price: product.price,
+          name: product.name
+        })
+      }
+    },
     clickDetalleProducto (product) {
       this.product = product
       this.productDialog = true
       this.productAction = 'ver'
+    },
+    clearSearch () {
+      this.$q.dialog({
+        title: 'Limpiar busqueda',
+        message: '¿Estas seguro de limpiar la busqueda?',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        this.search = ''
+        this.saleDetails = []
+        this.productsGet()
+      })
     },
     productsGet () {
       this.loading = true
@@ -239,11 +302,29 @@ export default {
         })
         this.last_page = res.data.products.last_page
         this.current_page = res.data.products.current_page
+        this.total = res.data.products.total
       }).catch(err => {
         this.$alert.error(err.response.data.message)
       }).finally(() => {
         this.loading = false
       })
+    }
+  },
+  computed: {
+    cantidadTotalPedida () {
+      let total = 0
+      this.saleDetails.forEach(product => {
+        total += product.cantidad
+      })
+      return total
+    },
+    totalVenta () {
+      let total = 0
+      this.saleDetails.forEach(product => {
+        total += product.price * product.cantidad
+      })
+      const totalVenta = Math.round(total * 100) / 100
+      return totalVenta
     }
   }
 }
