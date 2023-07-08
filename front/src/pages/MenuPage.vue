@@ -4,7 +4,7 @@
       flat bordered dense
       title="Creacion de menu"
       :rows="products"
-      row-key="name"
+      row-key="id"
       selection="multiple"
       :loading="loading"
       :columns="[
