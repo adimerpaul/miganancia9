@@ -205,9 +205,9 @@
         <q-card-section>
           <q-form @submit.prevent="saleSubmit">
             <label class="text-subtitle2 text-bold">Datos del cliente</label>
-            <q-input v-model="sale.nombre" label="Nombre" dense outlined :rules="[val => !!val || 'Este campo es requerido']" />
+            <q-input v-model="sale.nombre" label="Nombre" dense outlined :rules="[val => !!val || 'Este campo es requerido',val => val.length > 3 || 'El nombre debe tener mas de 3 caracteres']" />
             <label class="text-subtitle2 text-bold">Dirección de entrega</label>
-            <q-input v-model="sale.direccion" label="Dirección" dense outlined :rules="[val => !!val || 'Este campo es requerido']" />
+            <q-input v-model="sale.direccion" label="Dirección" dense outlined :rules="[val => !!val || 'Este campo es requerido',val => val.length > 3 || 'La dirección debe tener mas de 3 caracteres']" />
             <label class="text-subtitle2 text-bold">Notas Adicionales</label>
             <q-input v-model="sale.nota" label="Nota" dense outlined type="textarea" />
             <label class="text-subtitle2 text-bold">Detalle del pedido</label>
@@ -355,7 +355,25 @@ export default {
       }
     },
     saleSubmit () {
-      console.log(this.sale)
+      this.$q.dialog({
+        title: 'Confirmar venta',
+        message: 'Esta seguro de confirmar la venta?',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        const saltoLinea = '%0A'
+        let details = ''
+        this.saleDetails.forEach(p => {
+          details += `*${p.name}* ${p.cantidad} x ${p.price} = ${p.cantidad * p.price} Bs ${saltoLinea}`
+        })
+        const text = `https://wa.me/591${this.agencia.telefono}?text=*Nombre* ${this.sale.nombre} ${saltoLinea}*Direccion:* ${this.sale.direccion} ${saltoLinea}*Nota:* ${this.sale.nota} ${saltoLinea}${details}`
+        this.search = ''
+        this.saleDetails = []
+        this.productsGet()
+        this.saleDialog = false
+        // console.log(text)
+        open(text, '_blank')
+      })
     },
     saleDialogClick () {
       this.sale = {
