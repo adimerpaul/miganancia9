@@ -8,7 +8,7 @@ use App\Http\Requests\UpdateProductRequest;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use Intervention\Image\ImageManagerStatic as Image;
 class ProductController extends Controller{
     public function index(Request $request){
         $search = request()->get('search', '');
@@ -66,6 +66,31 @@ class ProductController extends Controller{
     }
     public function productAll(Request $request){
         return Product::where('agencia_id', $request->user()->agencia_id)->get();
+    }
+    public function productAllBase64(Request $request){
+        $products= Product::where('agencia_id', $request->user()->agencia_id)->get();
+        foreach ($products as $product){
+            $product->base64=$this->getBase64($product->image);
+        }
+        return $products;
+    }
+    public function getBase64($image){
+        if (str_contains($image, 'http')){
+            error_log($image);
+            $url = $image;
+            $image = file_get_contents($url);
+            if ($image !== false){
+                return base64_encode($image);
+            }
+//            $img = Image::make($image)->resize(320, 240)->insert('public/watermark.png');
+
+//            Storage::disk('local')->put('arjunphp_laravel.png', file_get_contents('https://arjunphp.com/wp-content/uploads/2015/06/arjunphp_laravel.png'));
+
+//            copy($image, '/images/file.png');
+//            return base64_encode(file_get_contents(public_path('images/file.png')));
+        }else{
+            return 'data:image/jpg;base64,'.base64_encode(file_get_contents(public_path('images/'.$image)));
+        }
     }
     public function store(StoreProductRequest $request){
 //        if ($request->category_id == 0) $request->merge(['category_id' => null]);

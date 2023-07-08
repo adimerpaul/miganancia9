@@ -72,6 +72,8 @@
 </template>
 
 <script>
+import { Imprimir } from 'src/addons/Imprimir'
+
 export default {
   data () {
     return {
@@ -89,12 +91,20 @@ export default {
     this.getProducts()
   },
   methods: {
-    printMenu () {
-      console.log(this.selected)
+    ordenar (selected) {
+      selected.sort((a, b) => {
+        return a.order - b.order
+      })
+    },
+    async printMenu () {
+      const ordenado = this.selected.sort((a, b) => {
+        return a.order - b.order
+      })
+      await Imprimir.menuPrint(ordenado)
     },
     getProducts () {
       this.loading = true
-      this.$axios.get('productAll')
+      this.$axios.get('productAllBase64')
         .then((response) => {
           this.products = []
           response.data.forEach((item, index) => {

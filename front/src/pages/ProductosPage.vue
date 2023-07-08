@@ -225,7 +225,7 @@
                 :url="`${$url}upload/${product.id}/fileCreate`"
                 stack-label="upload image"/>
             </div>
-            <q-input outlined v-model="product.image" label="Imagen" dense hint="Selecciona una imagen" />
+<!--            <q-input outlined v-model="product.image" label="Imagen" dense hint="Selecciona una imagen" />-->
             <div class="text-grey text-caption">Te recomendamos que la imagen tenga un tamaño de 500 x 500 px en formato PNG y pese máximo 2MB.</div>
             <q-input outlined v-model="product.name" label="Nombre del producto*" dense hint="Recuerda, este debe ser único en tu inventario" :rules="[val => !!val || 'Este campo es requerido']" />
 <!--            <q-input outlined v-model="product.barra" label="Código de barras" dense hint="Escríbelo o escanéalo" />-->

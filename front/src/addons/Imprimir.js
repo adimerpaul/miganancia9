@@ -70,6 +70,139 @@ export class Imprimir {
     // doc.autoPrint();
     // doc.output('dataurlnewwindow', {filename: 'comprobante.pdf'});
   }
+  static menuPrint (menu) {
+    // console.log(menu)
+
+    const cm = this
+    /* eslint-disable */
+    const doc = new jsPDF('p', 'mm', 'letter')
+
+    doc.addFont("fonts/DancingScript-VariableFont_wght.ttf", "Dancing", "normal");
+    doc.addFont("fonts/DancingScript-Bold.ttf", "Dancing", "bold");
+    doc.addFont("fonts/Belanosima-Regular.ttf", "Belanosima", "normal");
+    doc.addFont("fonts/Belanosima-Bold.ttf", "Belanosima", "bold");
+    doc.addFont("fonts/Poppins-Regular.ttf", "Poppins", "normal");
+    doc.addFont("fonts/Poppins-Bold.ttf", "Poppins", "bold");
+    cm.cabezera(doc, '')
+    let iAux = 0
+    for (let i = 0; i < menu.length; i++) {
+      if ((i%2)===0) {
+        doc.setFont('Dancing', 'bold')
+        doc.setFontSize(15)
+        doc.setTextColor(57,30,19);
+        doc.text(menu[i].name, 70, 92+(iAux*25), { align: 'center', maxWidth: 50 })
+
+        doc.setFont('Belanosima', 'normal')
+        doc.setFontSize(12)
+        doc.setTextColor(249, 28, 4);
+        doc.text(menu[i].price+' Bs.', 55, 78+(iAux*25), { align: 'left', maxWidth: 50 })
+
+        doc.setFont('Poppins', 'normal')
+        doc.setFontSize(8)
+        doc.setTextColor(0,0,0);
+        doc.text(menu[i].description==null?'':menu[i].description, 60, 105+(iAux*25), { align: 'center', maxWidth: 55 })
+
+        var imgData = menu[i].base64;
+        doc.addImage(imgData, 'jpg', 20, 80+(iAux*25), 20, 20);
+
+      }else{
+        doc.setFont('Dancing', 'bold')
+        doc.setFontSize(15)
+        doc.setTextColor(57,30,19);
+        doc.text(menu[i].name, 170, 94+((iAux-1)*25), { align: 'center', maxWidth: 50 })
+
+        doc.setFont('Belanosima', 'normal')
+        doc.setFontSize(12)
+        doc.setTextColor(249, 28, 4);
+        doc.text(menu[i].price+' Bs.', 155, 80+((iAux-1)*25), { align: 'left', maxWidth: 50 })
+
+        doc.setFont('Poppins', 'normal')
+        doc.setFontSize(8)
+        doc.setTextColor(0,0,0);
+        doc.text(menu[i].description+'', 160, 107+((iAux-1)*25), { align: 'center', maxWidth: 55 })
+        var imgData = menu[i].base64;
+        doc.addImage(imgData, 'jpg', 120, 80+((iAux-1)*25), 20, 20);
+      }
+      iAux++
+      if (iAux===8) {
+        if (i>0 && i<menu.length-1) {
+          doc.addPage()
+        }
+        if (i<menu.length-1) {
+          cm.cabezera(doc, '')
+          iAux = 0
+        }
+      }
+    }
+
+    doc.save(`menu-${moment().format('YYYYMMDDHHmmss')}.pdf`)
+    // let y = 5
+    // doc.setFont('courier', 'bold')
+    // doc.setFontSize(10)
+    // doc.text(useCounterStore().agencia.nombre, 28, y, { align: 'center' })
+    // doc.setFont(undefined, 'normal')
+    // // doc.text(useCounterStore().agencia.nit, 28, y+4, { align: 'center' })
+    // doc.text(useCounterStore().agencia.direccion, 28, y+8, { align: 'center', maxWidth: 50 })
+    // doc.text('Tel '+useCounterStore().agencia.telefono, 28, y+16, { align: 'center' })
+    // doc.setFont(undefined, 'bold')
+    // doc.text(sale.paraLlevar=='Si' ? 'Para llevar' : 'En mesa', 28, y+20, { align: 'center' })
+    // doc.line(5, y+22, 50, y+22)
+    //
+    // doc.setFontSize(9)
+    // doc.text('CLIENTE', 5, y+25)
+    // doc.setFont(undefined, 'normal')
+    // doc.text(sale.client==null?'':sale.clientName, 28, y+28, { align: 'center', maxWidth: 50 })
+    // doc.setFont(undefined, 'bold')
+    // doc.text('FECHA', 5, y+32)
+    // doc.setFont(undefined, 'normal')
+    // doc.text(sale.date, 28, y+32, { align: 'center', maxWidth: 50 })
+    // doc.setFont(undefined, 'bold')
+    // doc.text('TIPO', 5, y+36)
+    // doc.setFont(undefined, 'normal')
+    // doc.text(sale.type, 28, y+36, { align: 'center', maxWidth: 50 })
+    // doc.line(5, y+38, 50, y+38)
+    //
+    // doc.setFont(undefined, 'bold')
+    // doc.text('CANT    PRODUCT   SUB', 5, y+41)
+    // let y2 = y+45
+    // doc.setFont(undefined, 'normal')
+    // sale.details.forEach(r => {
+    //   doc.setFontSize(7)
+    //   doc.text(`${r.quantity} ${r.productName}`, 5, y2, { maxWidth: 40 })
+    //   doc.setFontSize(9)
+    //   doc.text(`${r.total}`, 50, y2, { align: 'right'})
+    //   y2 += 4
+    // })
+    // y = y2
+    // doc.line(5, y, 50, y)
+    // doc.setFont(undefined, 'bold')
+    // doc.text('TOTAL', 5, y+4)
+    // doc.setFont(undefined, 'normal')
+    // doc.text(`${sale.total}`, 50, y+4, { align: 'right' })
+    // doc.setFont(undefined, 'bold')
+    // doc.text('USUARIO', 5, y+8)
+    // doc.setFont(undefined, 'normal')
+    // const nameSplit = useCounterStore().user.name.split(' ')
+    // doc.text(nameSplit[0], 50, y+8, { align: 'right', maxWidth: 50 })
+    // doc.text(sale.deliveryAddress==null?'':sale.deliveryAddress, 28, y+12, { align: 'center', maxWidth: 50 })
+
+
+    // doc.autoPrint();
+    // doc.output('dataurlnewwindow', {filename: 'comprobante.pdf'});
+  }
+  static cabezera (doc, i){
+
+    const img = new Image()
+    img.src = 'menu.png'
+    doc.addImage(img, 'PNG', 0, 0, 216, 280)
+
+    doc.setFont('Belanosima', 'bold')
+    doc.setTextColor(57,30,19);
+    doc.setFontSize(30)
+    doc.text(useCounterStore().agencia.nombre, 108, 28, { align: 'center', maxWidth: 100 })
+    doc.setFontSize(70)
+    doc.text(i+' MENU', 108, 58, { align: 'center', maxWidth: 100 })
+  }
 
   static factura (factura) {
     return new Promise((resolve, reject) => {
