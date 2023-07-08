@@ -140,6 +140,24 @@
                 </q-tooltip>
               </q-item-section>
             </q-item>
+            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" :href="'/'+$store.agencia.web" target="_blank">
+              <q-item-section avatar><q-icon name="o_shopping_cart" /></q-item-section>
+              <q-item-section>
+                <q-item-label>Delyvery</q-item-label>
+                <q-tooltip anchor="top middle" self="bottom middle">
+                  Delyvery online
+                </q-tooltip>
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/menu">
+              <q-item-section avatar><q-icon name="o_menu_book" /></q-item-section>
+              <q-item-section>
+                <q-item-label>Menu</q-item-label>
+                <q-tooltip anchor="top middle" self="bottom middle">
+                  Creacion de menu
+                </q-tooltip>
+              </q-item-section>
+            </q-item>
           </q-list>
         </q-header>
         <q-footer class="bg-white">
