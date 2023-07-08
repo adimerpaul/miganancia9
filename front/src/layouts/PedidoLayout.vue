@@ -22,9 +22,11 @@
           <q-btn
             icon="o_shopping_cart"
             :color="cantidadTotalPedida==0?'grey-4':'yellow-7'"
+            :disable="cantidadTotalPedida==0"
             text-color="black"
             class="text-bold"
             :label="cantidadTotalPedida"
+            @click="saleDialogClick"
           />
         </div>
       </q-toolbar>
@@ -179,7 +181,7 @@
                 Descripción
               </div>
               <div class="col-12 text-grey q-pa-xs">
-                {{ product.descripcion}}
+                {{ product.description}}
               </div>
 <!--              <div class="col-12">-->
 <!--                <q-btn :loading="loading" icon="o_shopping_cart" label="Comprar" rounded dense color="green" @click="clickbuy(product)" no-caps class="full-width q-mt-xs" />-->
@@ -190,12 +192,88 @@
       </q-card>
     </q-dialog>
     <q-dialog v-model="saleDialog" position="right" maximized>
+      <q-card style="width: 500px; max-width: 80vw;">
+        <q-card-section>
+          <div class="row items-center">
+            <div class="text-subtitle2 text-bold text-grey">
+              Resumen del pedido
+            </div>
+            <q-space/>
+            <q-btn icon="o_highlight_off" flat round dense v-close-popup />
+          </div>
+        </q-card-section>
+        <q-card-section>
+          <q-form @submit.prevent="saleSubmit">
+            <label class="text-subtitle2 text-bold">Datos del cliente</label>
+            <q-input v-model="sale.nombre" label="Nombre" dense outlined :rules="[val => !!val || 'Este campo es requerido']" />
+            <label class="text-subtitle2 text-bold">Dirección de entrega</label>
+            <q-input v-model="sale.direccion" label="Dirección" dense outlined :rules="[val => !!val || 'Este campo es requerido']" />
+            <label class="text-subtitle2 text-bold">Notas Adicionales</label>
+            <q-input v-model="sale.nota" label="Nota" dense outlined type="textarea" />
+            <label class="text-subtitle2 text-bold">Detalle del pedido</label>
+<!--            <q-scroll-area class="full-width" style="height: 200px">-->
+              <q-list bordered v-if="saleDetails.length>0" style="padding: 0px;margin: 0px;">
+<!--                <div class="row" v-for="(saleDetail,i) in saleDetails" :key="i">-->
+                  <q-item v-for="(saleDetail,i) in saleDetails" :key="i" class="q-my-sm" dense clickable v-ripple style="padding: 0px;margin: 0px;">
+                    <q-item-section top avatar>
+                      <q-avatar rounded>
+                        <q-img :src="saleDetail.image.includes('http')?saleDetail.image:`${$url}../images/${saleDetail.image}`"
+                               class="q-ma-xs" style="border-radius: 5px;"/>
+                      </q-avatar>
+                    </q-item-section>
+
+                    <q-item-section>
+                      <q-item-label caption class="text-black text-bold">{{ saleDetail.name }}</q-item-label>
+                      <q-item-label caption lines="1">{{ saleDetail.price }}</q-item-label>
+                    </q-item-section>
+
+                    <q-item-section side>
+                      <q-input style="width: 100px" v-model="saleDetail.cantidad" dense input-class="text-center"
+                               mask="#" fill-mask="0" reverse-fill-mask outlined
+                      >
+                        <template v-slot:prepend>
+                          <q-icon :name="saleDetail.cantidad==1?'o_delete':'o_remove_circle_outline'" :color="saleDetail.cantidad==1?'red':''" class="cursor-pointer" flat @click="minusCantidadDetail(saleDetail)" />
+                        </template>
+                        <template v-slot:append>
+                          <q-icon name="o_add_circle_outline" class="cursor-pointer" flat @click="moreCantidadDetail(saleDetail)" />
+                        </template>
+                      </q-input>
+                    </q-item-section>
+                  </q-item>
+<!--                </div>-->
+              </q-list>
+              <div v-else class="text-center q-pa-lg text-bold text-grey">No hay productos</div>
+<!--              <div class="fit row wrap justify-between">-->
+<!--                <div class="row wrap">-->
+<!--                  <q-img :src="product.image.includes('http')?product.image:`${$url}../images/${product.image}`"-->
+<!--                         width="40px" class="q-ma-xs" style="border-radius: 5px;"/>-->
+<!--                  <div>-->
+<!--                    <div class="text-bold">{{product.name}}</div>-->
+<!--                    <div>{{product.price}} Bs</div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div>cantidad</div>-->
+<!--              </div>-->
+<!--            </q-scroll-area>-->
+<!--            <div><pre>{{saleDetails}}</pre></div>-->
+            <q-btn rounded class="q-mt-xs full-width text-bold" no-caps
+                   color="yellow-7" text-color="black" v-if="saleDetails.length>0"
+                   align="around" type="submit">
+              <div class="fit row wrap justify-between">
+                <div><q-chip color="white" dense :label="cantidadTotalPedida" text-color="black" icon="o_shopping_cart" /></div>
+                <div class="flex flex-center">Confirmar</div>
+                <div class="flex flex-center">Bs {{ totalVenta }}</div>
+              </div>
+            </q-btn>
+          </q-form>
+        </q-card-section>
+      </q-card>
     </q-dialog>
 <!--    v-if="saleDetails.length>0"-->
       <q-btn rounded class="btn-fixed-width full-width text-bold" no-caps
-             style="position: fixed; bottom: 20px; right: 0px; z-index: 9999;"
+             style="position: fixed; bottom: 20px; right: 0px; z-index: 100;"
              color="yellow-7" text-color="black" v-if="saleDetails.length>0"
-             align="around" >
+             align="around" @click="saleDialogClick" >
           <div class="fit row wrap justify-between">
           <div><q-chip color="white" rounded :label="cantidadTotalPedida" text-color="black" icon="o_shopping_cart" /></div>
           <div class="flex flex-center">Ir al carrito de compras</div>
@@ -216,6 +294,11 @@ export default {
       search: '',
       last_page: 1,
       agencia: {},
+      columnsProductosVenta: [
+        { label: 'borrar', field: 'borrar', name: 'borrar', align: 'left' },
+        { label: 'nombre', field: 'nombre', name: 'nombre', align: 'left' },
+        { label: 'cantidadVenta', field: 'cantidadVenta', name: 'cantidadVenta' }
+      ],
       loading: false,
       leftDrawerOpen: false,
       order: 'id',
@@ -225,6 +308,7 @@ export default {
       saleDialog: false,
       productAction: '',
       saleDetails: [],
+      sale: {},
       orders: [
         { label: 'Ordenar por', value: 'id' },
         { label: 'Menor precio', value: 'price asc' },
@@ -248,6 +332,39 @@ export default {
     })
   },
   methods: {
+    moreCantidadDetail (product) {
+      product.cantidad++
+      const find = this.products.find(p => p.id === product.id)
+      if (find) {
+        find.cantidadPedida++
+      }
+    },
+    minusCantidadDetail (product) {
+      if (product.cantidad > 0) {
+        product.cantidad--
+        const find = this.products.find(p => p.id === product.id)
+        if (find) {
+          if (find.cantidadPedida > 0) {
+            find.cantidadPedida--
+          }
+        }
+        if (product.cantidad <= 0) {
+          const index = this.saleDetails.findIndex(p => p.id === product.id)
+          this.saleDetails.splice(index, 1)
+        }
+      }
+    },
+    saleSubmit () {
+      console.log(this.sale)
+    },
+    saleDialogClick () {
+      this.sale = {
+        nombre: '',
+        direccion: '',
+        nota: ''
+      }
+      this.saleDialog = true
+    },
     minusCantidad (product) {
       if (product.cantidadPedida > 0) {
         product.cantidadPedida--
@@ -271,7 +388,8 @@ export default {
           id: product.id,
           cantidad: 1,
           price: product.price,
-          name: product.name
+          name: product.name,
+          image: product.image
         })
       }
     },

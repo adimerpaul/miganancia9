@@ -16,8 +16,7 @@ class Product extends Model
         'cost',
         'amount',
         'agencia_id',
-        'agencia_id',
         'user_id',
-        'user_id',
+        'description',
     ];
 }

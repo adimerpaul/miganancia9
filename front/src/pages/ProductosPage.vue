@@ -197,7 +197,7 @@
                 Descripción
               </div>
               <div class="col-12 text-grey q-pa-xs">
-                {{ product.descripcion}}
+                {{ product.description}}
               </div>
               <div class="col-6">
                 <q-btn :loading="loading" icon="o_delete" label="Eliminar" rounded dense color="red" @click="productDelete" no-caps class="full-width" />
@@ -240,7 +240,7 @@
             <q-input outlined v-model="product.cost" label="Costo" dense hint="Valor que pagas al proveedor por el producto"/>
             <q-input outlined v-model="product.price" label="Precio*" dense hint="Valor que le cobras a tus clientes por el producto" :rules="[val => !!val || 'Este campo es requerido']"/>
 <!--            <q-select class="bg-white" emit-value map-options label="Categoria" dense outlined v-model="product.category_id" option-value="id" option-label="name" :options="categories" hint="Selecciona una categoria"/>-->
-<!--            <q-input type="textarea" outlined v-model="product.descripcion" label="Descripción" dense hint="Agrega una descripción del producto"/>-->
+            <q-input type="textarea" outlined v-model="product.description" label="Descripción" dense hint="Agrega una descripción del producto"/>
 <!--            <q-select class="bg-white" emit-value map-options label="Agencia" dense outlined v-model="product.agencia_id" option-value="id" option-label="nombre" :options="agencias" hint="Selecciona una agencia" :rules="[val => !!val || 'Este campo es requerido']"/>-->
             <q-btn class="full-width" rounded
                    :color="!product.name || !product.price ? 'grey' : 'green'"
@@ -275,7 +275,7 @@
 <!--            <q-input outlined v-model="product.cost" label="Costo" dense hint="Valor que pagas al proveedor por el producto"/>-->
 <!--            <q-input outlined v-model="product.price" label="Precio*" dense hint="Valor que le cobras a tus clientes por el producto" :rules="[val => !!val || 'Este campo es requerido']"/>-->
             <!--            <q-select class="bg-white" emit-value map-options label="Categoria" dense outlined v-model="product.category_id" option-value="id" option-label="name" :options="categories" hint="Selecciona una categoria"/>-->
-            <!--            <q-input type="textarea" outlined v-model="product.descripcion" label="Descripción" dense hint="Agrega una descripción del producto"/>-->
+            <!--            <q-input type="textarea" outlined v-model="product.description" label="Descripción" dense hint="Agrega una descripción del producto"/>-->
             <!--            <q-select class="bg-white" emit-value map-options label="Agencia" dense outlined v-model="product.agencia_id" option-value="id" option-label="nombre" :options="agencias" hint="Selecciona una agencia" :rules="[val => !!val || 'Este campo es requerido']"/>-->
             <q-btn class="full-width" rounded
                    :color="buy.amount==0 ? 'grey' : 'green'"
