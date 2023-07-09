@@ -6,12 +6,43 @@ use App\Models\Agencia;
 use App\Http\Requests\StoreAgenciaRequest;
 use App\Http\Requests\UpdateAgenciaRequest;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AgenciaController extends Controller{
     public function index(){
         return Agencia::all();
+    }
+    public function store(StoreAgenciaRequest $request){
+        $agencia = Agencia::create($request->all());
+        $user = new User();
+        $user->name = 'Administador';
+        $user->nickname = $agencia->web.'Admin';
+        $user->password = bcrypt($agencia->web.'123A');
+        $user->type = 'admin';
+        $user->agencia_id = $agencia->id;
+        $user->save();
+        $user = new User();
+        $user->name = 'Vendedor';
+        $user->nickname = $agencia->web.'Vendedor';
+        $user->password = bcrypt($agencia->web.'123');
+        $user->type = 'user';
+        $user->agencia_id = $agencia->id;
+        $user->save();
+        return response()->json($agencia, 201);
+    }
+    public function update(UpdateAgenciaRequest $request, Agencia $agencia){
+        $agencia->update($request->all());
+        $user = User::where('agencia_id',$agencia->id)->where('type','admin')->first();
+        $user->nickname = $agencia->web.'Admin';
+        $user->password = bcrypt($agencia->web.'123A');
+        $user->save();
+        $user = User::where('agencia_id',$agencia->id)->where('type','user')->first();
+        $user->nickname = $agencia->web.'Vendedor';
+        $user->password = bcrypt($agencia->web.'123');
+        $user->save();
+        return response()->json($agencia, 200);
     }
     public function agenciaWebSearch($web){
         $agencia = Agencia::where('web',$web)->first();

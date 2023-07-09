@@ -22,7 +22,7 @@ class StoreAgenciaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'web' => 'required|unique:agencias,web',
         ];
     }
 }

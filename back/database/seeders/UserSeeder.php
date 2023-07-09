@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
                 'nickname'=> 'Admin',
                 'password'=> bcrypt('admin123A'),
                 'type'=> 'admin',
-                'agencia_id'=> 1
+                'agencia_id'=> 2
             ],
             [
                 'name'=> 'Amilkar Daniel Quispaya Lima',

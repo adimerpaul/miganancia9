@@ -5,7 +5,7 @@
         <q-table dense :rows-per-page-options="[0]" :rows="agencias" :columns="agenciasColumns" :filter="filter" title="Lista de empresa registradas">
           <template v-slot:top-right>
             <q-btn dense icon="add_circle_outline" @click="agenciaAdd" color="primary" label="Agregar" no-caps />
-            <q-btn flat rounded dense icon="refresh" @click="getBuys" color="primary" />
+            <q-btn flat rounded dense icon="refresh" @click="genciaGet" color="primary" />
             <q-input outlined v-model="filter" label="Buscar" dense>
               <template v-slot:append>
                 <q-icon name="search" />
@@ -14,7 +14,7 @@
           </template>
           <template v-slot:body-cell-actions="props">
             <q-td :props="props" auto-width>
-              <q-btn dense rounded flat icon="edit" @click="edit(props.row)" color="primary" />
+              <q-btn dense rounded flat icon="edit" @click="agenciaEdit(props.row)" color="primary" />
             </q-td>
           </template>
           <template v-slot:body-cell-id="props">
@@ -34,11 +34,11 @@
           </template>
           <template v-slot:body-cell-color="props">
             <q-td :props="props" auto-width>
-              <q-badge :color="props.row.color" text-color="white">{{props.row.color}}</q-badge>
+              <q-badge :style="`background: ${props.row.color}`"  text-color="white">{{props.row.color}}</q-badge>
             </q-td>
           </template>
         </q-table>
-        <pre>{{agencias}}</pre>
+<!--        <pre>{{agencias}}</pre>-->
       </div>
     </div>
     <q-dialog v-model="agenciaDialog" position="right" maximized>
@@ -53,51 +53,65 @@
         <q-card-section>
           <q-form v-if="agenciaAction === 'ver'">
             <div class="flex flex-center">
-              <q-img :src="agencia.image.includes('http')?agencia.image:`${$url}../images/${agencia.image}`" width="200px">
+              <q-img :src="agencia.logo.includes('http')?agencia.logo:`${$url}../images/${agencia.logo}`" width="200px">
                 <div class="absolute-bottom text-center text-subtitle2" style="padding: 0px 0px;">
                   {{agencia.name}}
                 </div>
               </q-img>
             </div>
-            <q-card-section class="q-pa-none q-ma-none">
-              <div class="text-center text-subtitle2">{{ agencia.price }} Bs</div>
-              <div :class="agencia.cantidad<=0?'text-center text-bold text-red':' text-center text-bold'">{{ agencia.cantidad }} Disponible</div>
-            </q-card-section>
             <q-card flat bordered class="bg-grey-1">
               <q-card-section>
                 <div class="row">
                   <div class="col-12 col-md-6 text-subtitle2 text-bold text-grey">
-                    <q-icon name="o_paid" class="text-grey" size="20px" />
-                    Precio
+                    Nombre
                   </div>
                   <div class="col-12 col-md-6">
-                    <div class="text-grey text-caption text-right">{{ agencia.price }} Bs</div>
+                    <div class="text-grey text-caption text-right">{{ agencia.nombre }}</div>
                   </div>
                   <div class="col-12 col-md-6 text-subtitle2 text-bold text-grey">
-                    <q-icon name="o_shopping_bag" class="text-grey" size="20px" />
-                    Costo
+                    Dirección
                   </div>
                   <div class="col-12 col-md-6">
-                    <div class="text-grey text-caption text-right">{{ agencia.cost }} Bs</div>
+                    <div class="text-grey text-caption text-right">{{ agencia.direccion }}</div>
+                  </div>
+                  <div class="col-12 col-md-6 text-subtitle2 text-bold text-grey">
+                    Teléfono
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <div class="text-grey text-caption text-right">{{ agencia.telefono }}</div>
+                  </div>
+                  <div class="col-12 col-md-6 text-subtitle2 text-bold text-grey">
+                    Web
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <div class="text-grey text-caption text-right">{{ agencia.web }}</div>
+                  </div>
+                  <div class="col-12 col-md-6 text-subtitle2 text-bold text-grey">
+                    Color
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <div class="text-grey text-caption text-right">
+                      <q-badge :style="`background: ${agencia.color}`"  text-color="white">{{agencia.color}}</q-badge>
+                    </div>
                   </div>
                 </div>
               </q-card-section>
             </q-card>
             <div class="row">
               <div class="col-12 text-subtitle2 text-bold">
-                Descripción
+                Acciones
               </div>
-              <div class="col-12 text-grey q-pa-xs">
-                {{ agencia.description}}
-              </div>
+<!--              <div class="col-12 text-grey q-pa-xs">-->
+<!--                {{ agencia.description}}-->
+<!--              </div>-->
               <div class="col-6">
-                <q-btn :loading="loading" icon="o_delete" label="Eliminar" rounded dense color="red" @click="agenciaDelete" no-caps class="full-width" />
+<!--                <q-btn :loading="loading" icon="o_delete" label="Eliminar" rounded dense color="red" @click="agenciaDelete" no-caps class="full-width" />-->
               </div>
-              <div class="col-6">
+              <div class="col-12">
                 <q-btn :loading="loading" icon="o_edit" label="Editar" outline rounded dense color="grey" @click="agenciaAction = 'edit'" no-caps class="full-width" />
               </div>
               <div class="col-12">
-                <q-btn :loading="loading" icon="o_shopping_cart" label="Comprar" rounded dense color="green" @click="clickbuy(agencia)" no-caps class="full-width q-mt-xs" />
+<!--                <q-btn :loading="loading" icon="o_shopping_cart" label="Comprar" rounded dense color="green" @click="clickbuy(agencia)" no-caps class="full-width q-mt-xs" />-->
               </div>
             </div>
           </q-form>
@@ -117,64 +131,26 @@
                 stack-label="upload image"/>
             </div>
             <div class="text-grey text-caption">Te recomendamos que la imagen tenga un tamaño de 500 x 500 px en formato PNG y pese máximo 2MB.</div>
-            <q-input outlined v-model="agencia.name" label="Nombre del Empresa*" dense hint="Recuerda, este debe ser único en tu inventario" :rules="[val => !!val || 'Este campo es requerido']" />
-<!--            <q-input outlined v-model="agencia.amount" label="Cantidad" input-class="text-center" dense hint="">-->
-<!--              <template v-slot:append>-->
-<!--                <q-icon name="o_add_circle_outline" @click="cantidadMore" class="cursor-pointer"/>-->
-<!--              </template>-->
-<!--              <template v-slot:prepend>-->
-<!--                <q-icon name="o_remove_circle_outline" @click="cantidadMinus" class="cursor-pointer"/>-->
-<!--              </template>-->
-<!--            </q-input>-->
+            <q-input outlined v-model="agencia.nombre" label="Nombre del Empresa*" dense hint="Recuerda, este debe ser único en tu inventario" :rules="[val => !!val || 'Este campo es requerido']" />
             <q-input outlined v-model="agencia.direccion" label="Dirección*" dense hint="Dirección del Empresa" :rules="[val => !!val || 'Este campo es requerido']"/>
             <q-input outlined v-model="agencia.telefono" label="Teléfono*" dense hint="Teléfono del Empresa" :rules="[val => !!val || 'Este campo es requerido']"/>
-<!--            <q-input type="textarea" outlined v-model="agencia.description" label="Descripción" dense hint="Agrega una descripción del agenciao"/>-->
-            <q-input outlined v-model="agencia.website" label="Sitio Web" dense hint="Sitio Web del Empresa"/>
+            <q-input outlined v-model="agencia.web" label="Sitio Web" dense hint="Sitio Web del Empresa"/>
             <div class="text-center">
-              <q-badge color="grey-3" text-color="black" class="q-mb-sm">
+              <q-badge :style="`background: ${agencia.color};`" class="cursor-pointer" >
                 {{ agencia.color }}
               </q-badge>
-              <q-color
-                v-model="agencia.color"
-                no-header
-                no-footer
-                default-view="palette"
-                class="my-picker"
-              />
+              <q-input outlined v-model="agencia.color" label="Color" dense hint="Color del Empresa"/>
+              <div class="flex flex-center">
+                <q-color
+                  v-model="agencia.color"
+                  no-header
+                  no-footer
+                />
+              </div>
             </div>
             <q-btn class="full-width" rounded
-                   :color="!agencia.name || !agencia.price ? 'grey' : 'green'"
-                   :disable="!agencia.name || !agencia.price"
-                   label="Guardar" no-caps type="submit" :loading="loading"/>
-          </q-form>
-          <q-form @submit="buySave" v-if="agenciaAction === 'buy'">
-            <q-select proveedor dense outlined v-model="buy.client_id" label="Proveedor"
-                      map-options emit-value option-value="id" option-label="name"
-                      :options="proveedores" hint="Proveedor del gasto">
-              <template v-slot:after>
-                <q-btn icon="add_circle_outline" color="green" flat round dense @click="providerCreate" />
-              </template>
-            </q-select>
-            <q-select proveedor dense outlined v-model="buy.agencia_id" label="Producto"
-                      map-options emit-value option-value="id" option-label="name"
-                      :options="agenciasAll" hint="Producto que compras">
-            </q-select>
-            <q-select proveedor dense outlined v-model="buy.unit" label="Unidad"
-                      :options="['Unidad', 'Caja', 'Paquete', 'Kilo', 'Litro']" hint="Unidad de medida">
-            </q-select>
-            <q-input outlined v-model="buy.amount" label="Cantidad" input-class="text-center" dense hint="">
-              <template v-slot:append>
-                <q-icon name="o_add_circle_outline" @click="cantidadMoreBuy" class="cursor-pointer"/>
-              </template>
-              <template v-slot:prepend>
-                <q-icon name="o_remove_circle_outline" @click="cantidadMinusBuy" class="cursor-pointer"/>
-              </template>
-            </q-input>
-            <q-input outlined v-model="buy.dateExpiration" label="Fecha de vencimiento" dense hint="Fecha de vencimiento del agenciao" type="date"/>
-            <q-input outlined type="textarea" v-model="buy.description" label="Descripción" dense hint="Descripción de la compra"/>
-            <q-btn class="full-width" rounded
-                   :color="buy.amount==0 ? 'grey' : 'green'"
-                   :disable="buy.amount==0?true:false"
+                   :color="!agencia.nombre || !agencia.direccion || !agencia.telefono || !agencia.web || !agencia.color || !agencia.logo ? 'grey' : 'primary'"
+                   :disable="!agencia.nombre || !agencia.direccion || !agencia.telefono || !agencia.web || !agencia.color || !agencia.logo"
                    label="Guardar" no-caps type="submit" :loading="loading"/>
           </q-form>
         </q-card-section>
@@ -223,7 +199,7 @@ export default {
             this.$alert.success('Agencia creada correctamente')
           })
           .catch((error) => {
-            this.$alert.error(error)
+            this.$alert.error(error.response.data.message)
           })
           .finally(() => {
             this.loading = false
@@ -248,7 +224,7 @@ export default {
         if (e.xhr.readyState === e.xhr.DONE) {
           if (e.xhr.status === 200) {
             // this.dialogPhoto=false
-            this.product.image = e.xhr.response
+            this.agencia.logo = e.xhr.response
           }
         }
       }
@@ -257,11 +233,24 @@ export default {
       console.log(err)
       this.$alert.error('Error al subir la imagen, intente nuevamente el nombre no debe contener espacios o ñ')
     },
+    agenciaEdit (agencia) {
+      this.agenciaAction = 'ver'
+      this.agenciaDialog = true
+      this.agencia = {
+        id: agencia.id,
+        nombre: agencia.nombre,
+        direccion: agencia.direccion,
+        telefono: agencia.telefono,
+        web: agencia.web,
+        logo: agencia.logo,
+        color: agencia.color
+      }
+    },
     agenciaAdd () {
       this.agenciaAction = 'create'
       this.agenciaDialog = true
       this.agencia = {
-        id: '',
+        id: '0',
         nombre: '',
         direccion: '',
         telefono: '',
@@ -270,7 +259,7 @@ export default {
         color: '#0052a3'
       }
     },
-    getBuys () {
+    genciaGet () {
       this.$axios.get('agencias')
         .then((response) => {
           this.agencias = response.data
@@ -281,7 +270,7 @@ export default {
     }
   },
   mounted () {
-    this.getBuys()
+    this.genciaGet()
   }
 }
 </script>

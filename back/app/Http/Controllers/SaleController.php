@@ -17,6 +17,7 @@ class SaleController extends Controller{
         $dateInit = $request->get('dateIni');
         $dateEnd = $request->get('dateFin');
         $sales = Sale::whereBetween('date', [$dateInit, $dateEnd])
+            ->where('agencia_id', $request->user()->agencia_id)
             ->with(['details','client','user'])
             ->orderBy('id','desc')->get();
         return $sales;
