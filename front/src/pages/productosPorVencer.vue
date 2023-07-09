@@ -2,7 +2,7 @@
   <q-page class="bg-grey-2 q-pa-xs">
     <div class="row">
       <div class="col-12">
-        <q-table dense :rows-per-page-options="[0]" :rows="buys" :filter="filter" :columns="buysColumns">
+        <q-table dense :rows-per-page-options="[0]" :rows="buys" :filter="filter" :columns="buysColumns" title="Productos por vencer">
           <template v-slot:top-right>
             <q-btn flat rounded dense icon="refresh" @click="getBuys" color="primary" />
             <q-input outlined v-model="filter" label="Buscar" dense>

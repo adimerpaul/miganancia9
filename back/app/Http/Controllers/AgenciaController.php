@@ -10,7 +10,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AgenciaController extends Controller{
-    public function index(){}
+    public function index(){
+        return Agencia::all();
+    }
     public function agenciaWebSearch($web){
         $agencia = Agencia::where('web',$web)->first();
         if ($agencia){

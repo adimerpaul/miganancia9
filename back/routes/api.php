@@ -19,11 +19,14 @@ use Illuminate\Support\Facades\Route;
 //});
 Route::post('/login',[\App\Http\Controllers\UserController::class,'login']);
 Route::post('upload/{id}/{option}', [\App\Http\Controllers\UploadController::class, 'upload']);
+Route::get('agenciaWebSearch/{web}', [\App\Http\Controllers\AgenciaController::class, 'agenciaWebSearch']);
+Route::get('agenciaProducts', [\App\Http\Controllers\AgenciaController::class, 'agenciaProducts']);
 Route::group(['middleware'=>'auth:sanctum'],function () {
     Route::post('/me', [\App\Http\Controllers\UserController::class, 'me']);
     Route::post('/logout', [\App\Http\Controllers\UserController::class, 'logout']);
     Route::resource('clients', \App\Http\Controllers\ClientController::class);
     Route::resource('sales', \App\Http\Controllers\SaleController::class);
+    Route::resource('agencias', \App\Http\Controllers\AgenciaController::class);
     Route::resource('products', \App\Http\Controllers\ProductController::class);
     Route::resource('buys', \App\Http\Controllers\BuyController::class);
     Route::get('productAll', [\App\Http\Controllers\ProductController::class, 'productAll']);
@@ -32,5 +35,3 @@ Route::group(['middleware'=>'auth:sanctum'],function () {
     Route::post('/searchClient', [\App\Http\Controllers\ClientController::class,'searchClient']);
     Route::post('/saleProduct', [\App\Http\Controllers\ReportController::class,'saleProduct']);
 });
-Route::get('agenciaWebSearch/{web}', [\App\Http\Controllers\AgenciaController::class, 'agenciaWebSearch']);
-Route::get('agenciaProducts', [\App\Http\Controllers\AgenciaController::class, 'agenciaProducts']);

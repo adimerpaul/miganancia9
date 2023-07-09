@@ -88,9 +88,9 @@ export class Imprimir {
     for (let i = 0; i < menu.length; i++) {
       if ((i%2)===0) {
         doc.setFont('Dancing', 'bold')
-        doc.setFontSize(15)
+        doc.setFontSize(17)
         doc.setTextColor(57,30,19);
-        doc.text(menu[i].name, 70, 92+(iAux*25), { align: 'center', maxWidth: 50 })
+        doc.text(menu[i].name, 70, 91+(iAux*25), { align: 'center', maxWidth: 50 })
 
         doc.setFont('Belanosima', 'normal')
         doc.setFontSize(12)
@@ -107,9 +107,9 @@ export class Imprimir {
 
       }else{
         doc.setFont('Dancing', 'bold')
-        doc.setFontSize(15)
+        doc.setFontSize(17)
         doc.setTextColor(57,30,19);
-        doc.text(menu[i].name, 170, 94+((iAux-1)*25), { align: 'center', maxWidth: 50 })
+        doc.text(menu[i].name, 170, 91+((iAux-1)*25), { align: 'center', maxWidth: 50 })
 
         doc.setFont('Belanosima', 'normal')
         doc.setFontSize(12)

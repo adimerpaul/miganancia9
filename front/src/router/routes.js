@@ -7,6 +7,7 @@ import ProductosPorVencer from 'pages/productosPorVencer.vue'
 import EstadisticasPage from 'pages/EstadisticasPage.vue'
 import PedidoLayout from 'layouts/PedidoLayout.vue'
 import MenuPage from 'pages/MenuPage.vue'
+import EmpresaPage from 'pages/EmpresaPage.vue'
 
 const routes = [
   {
@@ -18,7 +19,8 @@ const routes = [
       { path: 'sale', component: SalePage, meta: { requiresAuth: true } },
       { path: 'productosPorVencer', component: ProductosPorVencer, meta: { requiresAuth: true } },
       { path: 'estadisticas', component: EstadisticasPage, meta: { requiresAuth: true } },
-      { path: 'menu', component: MenuPage, meta: { requiresAuth: true } }
+      { path: 'menu', component: MenuPage, meta: { requiresAuth: true } },
+      { path: 'empresa', component: EmpresaPage, meta: { requiresAuth: true } }
     ]
   },
   { path: '/:tienda', component: PedidoLayout },

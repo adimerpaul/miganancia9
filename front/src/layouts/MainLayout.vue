@@ -43,7 +43,7 @@
             <q-item-label header class="text-bold q-pa-none q-ma-none text-center" >
               <q-item clickable v-ripple class="q-pa-none q-ma-none">
                 <q-item-section avatar class="q-pa-none q-ma-none">
-                  <q-avatar class="q-pa-none q-ma-none">
+                  <q-avatar class="q-pa-none q-ma-none q-pl-md">
                     <q-img :src="agencia.logo.includes('http')?agencia.logo:`${$url}../images/${agencia.logo}`" width="50px" />
                   </q-avatar>
                 </q-item-section>
@@ -53,6 +53,17 @@
                 </q-item-section>
               </q-item>
             </q-item-label>
+            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="empresa" v-if="$store.user.id=='1'">
+              <q-item-section avatar><q-icon name="o_factory" /></q-item-section>
+              <q-item-section>
+                <q-item-label>
+                  Empresas
+                  <q-tooltip anchor="top middle" self="bottom middle">
+                    Configuración de empresas
+                  </q-tooltip>
+                </q-item-label>
+              </q-item-section>
+            </q-item>
             <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/">
               <q-item-section avatar><q-icon name="o_store" /></q-item-section>
               <q-item-section>
@@ -86,42 +97,42 @@
                 </q-tooltip>
               </q-item-section>
             </q-item>
-            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/clientes" v-if="$store.user.id=='1'">
-              <q-item-section avatar><q-icon name="o_face" /></q-item-section>
-              <q-item-section>
-                <q-item-label>Clientes</q-item-label>
-                <q-tooltip anchor="top middle" self="bottom middle">
-                  Administrar clientes
-                </q-tooltip>
-              </q-item-section>
-            </q-item>
-            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/proveedores" v-if="$store.user.id=='1'">
-              <q-item-section avatar><q-icon name="o_assignment_ind" /></q-item-section>
-              <q-item-section>
-                <q-item-label>Proveedores</q-item-label>
-                <q-tooltip anchor="top middle" self="bottom middle">
-                  Administrar proveedores
-                </q-tooltip>
-              </q-item-section>
-            </q-item>
-            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/reportes" v-if="$store.user.id=='1'">
-              <q-item-section avatar><q-icon name="o_print" /></q-item-section>
-              <q-item-section>
-                <q-item-label>Reportes</q-item-label>
-                <q-tooltip anchor="top middle" self="bottom middle">
-                  Consultar reportes
-                </q-tooltip>
-              </q-item-section>
-            </q-item>
-            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/users" v-if="$store.user.id=='1'">
-              <q-item-section avatar><q-icon name="o_manage_accounts" /></q-item-section>
-              <q-item-section>
-                <q-item-label>Usuarios</q-item-label>
-                <q-tooltip anchor="top middle" self="bottom middle">
-                  Administrar usuarios
-                </q-tooltip>
-              </q-item-section>
-            </q-item>
+<!--            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/clientes" v-if="$store.user.id=='1'">-->
+<!--              <q-item-section avatar><q-icon name="o_face" /></q-item-section>-->
+<!--              <q-item-section>-->
+<!--                <q-item-label>Clientes</q-item-label>-->
+<!--                <q-tooltip anchor="top middle" self="bottom middle">-->
+<!--                  Administrar clientes-->
+<!--                </q-tooltip>-->
+<!--              </q-item-section>-->
+<!--            </q-item>-->
+<!--            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/proveedores" v-if="$store.user.id=='1'">-->
+<!--              <q-item-section avatar><q-icon name="o_assignment_ind" /></q-item-section>-->
+<!--              <q-item-section>-->
+<!--                <q-item-label>Proveedores</q-item-label>-->
+<!--                <q-tooltip anchor="top middle" self="bottom middle">-->
+<!--                  Administrar proveedores-->
+<!--                </q-tooltip>-->
+<!--              </q-item-section>-->
+<!--            </q-item>-->
+<!--            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/reportes" v-if="$store.user.id=='1'">-->
+<!--              <q-item-section avatar><q-icon name="o_print" /></q-item-section>-->
+<!--              <q-item-section>-->
+<!--                <q-item-label>Reportes</q-item-label>-->
+<!--                <q-tooltip anchor="top middle" self="bottom middle">-->
+<!--                  Consultar reportes-->
+<!--                </q-tooltip>-->
+<!--              </q-item-section>-->
+<!--            </q-item>-->
+<!--            <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/users" v-if="$store.user.id=='1'">-->
+<!--              <q-item-section avatar><q-icon name="o_manage_accounts" /></q-item-section>-->
+<!--              <q-item-section>-->
+<!--                <q-item-label>Usuarios</q-item-label>-->
+<!--                <q-tooltip anchor="top middle" self="bottom middle">-->
+<!--                  Administrar usuarios-->
+<!--                </q-tooltip>-->
+<!--              </q-item-section>-->
+<!--            </q-item>-->
             <q-item clickable v-ripple exact active-class="bg-primary text-white text-bold" to="/productosPorVencer">
               <q-item-section avatar><q-icon name="o_store" /></q-item-section>
               <q-item-section>
