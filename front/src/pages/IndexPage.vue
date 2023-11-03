@@ -35,7 +35,7 @@
               </q-item-section>
               <q-item-section>
                 <q-item-label class="text-subtitle2 text-grey">Total referencia</q-item-label>
-                <q-item-label class="text-bold text-h6">{{totalGanancias}} Bs</q-item-label>
+                <q-item-label class="text-bold text-h6">{{totalGanancias}} {{$store.agencia.moneda}}</q-item-label>
               </q-item-section>
             </q-item>
           </q-card-section>
@@ -53,7 +53,7 @@
               </q-item-section>
               <q-item-section>
                 <q-item-label class="text-subtitle2 text-grey">Ventas totales</q-item-label>
-                <q-item-label :class="`text-bold text-h6 text-green`">{{totalIngresos}} Bs</q-item-label>
+                <q-item-label :class="`text-bold text-h6 text-green`">{{totalIngresos}} {{$store.agencia.moneda}}</q-item-label>
               </q-item-section>
             </q-item>
           </q-card-section>
@@ -71,7 +71,7 @@
               </q-item-section>
               <q-item-section>
                 <q-item-label class="text-subtitle2 text-grey">Gastos totales</q-item-label>
-                <q-item-label :class="`text-bold text-h6 text-red`">{{totalEgresos}} Bs</q-item-label>
+                <q-item-label :class="`text-bold text-h6 text-red`">{{totalEgresos}} {{$store.agencia.moneda}}</q-item-label>
               </q-item-section>
             </q-item>
           </q-card-section>
@@ -114,7 +114,7 @@
                 <span class="text-grey q-ml-xs">{{ props.row.description }}</span>
               </q-td>
               <q-td key="montoTotal" :props="props">
-                <span class="text-grey">{{ props.row.total }} Bs</span>
+                <span class="text-grey">{{ props.row.total }} {{$store.agencia.moneda}}</span>
               </q-td>
               <q-td key="metodoPago" :props="props" class="text-grey">
                 {{ props.row.metodoPago }}

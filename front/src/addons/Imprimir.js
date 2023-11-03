@@ -23,7 +23,7 @@ export class Imprimir {
     doc.text(useCounterStore().agencia.nombre, 28, y, { align: 'center' })
     doc.setFont(undefined, 'normal')
     // doc.text(useCounterStore().agencia.nit, 28, y+4, { align: 'center' })
-    doc.text(useCounterStore().agencia.direccion, 28, y+8, { align: 'center', maxWidth: 50 })
+    doc.text(useCounterStore().agencia.direccion, 28, y+5, { align: 'center', maxWidth: 50 })
     doc.text('Tel '+useCounterStore().agencia.telefono, 28, y+16, { align: 'center' })
     doc.setFont(undefined, 'bold')
     doc.text(sale.paraLlevar=='Si' ? 'Para llevar' : 'En mesa', 28, y+20, { align: 'center' })
@@ -119,7 +119,7 @@ export class Imprimir {
         doc.setFont('Poppins', 'normal')
         doc.setFontSize(8)
         doc.setTextColor(0,0,0);
-        doc.text(menu[i].description+'', 160, 107+((iAux-1)*25), { align: 'center', maxWidth: 55 })
+        doc.text(menu[i].description?'':menu[i].description, 160, 107+((iAux-1)*25), { align: 'center', maxWidth: 55 })
         var imgData = menu[i].base64;
         doc.addImage(imgData, 'jpg', 120, 80+((iAux-1)*25), 20, 20);
       }
@@ -253,12 +253,12 @@ Oruro</div>
         })
         cadena += `<hr>
       <table style='font-size: 8px;'>
-      <tr><td class='titder' style='width: 60%'>SUBTOTAL Bs</td><td class='conte2'>${parseFloat(factura.montoTotal).toFixed(2)}</td></tr>
-      <tr><td class='titder'>DESCUENTO Bs</td><td class='conte2'>0.00</td></tr>
-      <tr><td class='titder'>TOTAL Bs</td><td class='conte2'>${parseFloat(factura.montoTotal).toFixed(2)}</td></tr>
-      <tr><td class='titder'>MONTO GIFT CARD Bs</td ><td class='conte2'>0.00</td></tr>
-      <tr><td class='titder'>MONTO A PAGAR Bs</td><td class='conte2'>${parseFloat(factura.montoTotal).toFixed(2)}</td></tr>
-      <tr><td class='titder' style='font-size: 8px'>IMPORTE BASE CRÉDITO FISCAL Bs</td>
+      <tr><td class='titder' style='width: 60%'>SUBTOTAL ${useCounterStore().agencia.moneda}</td><td class='conte2'>${parseFloat(factura.montoTotal).toFixed(2)}</td></tr>
+      <tr><td class='titder'>DESCUENTO ${useCounterStore().agencia.moneda}</td><td class='conte2'>0.00</td></tr>
+      <tr><td class='titder'>TOTAL ${useCounterStore().agencia.moneda}</td><td class='conte2'>${parseFloat(factura.montoTotal).toFixed(2)}</td></tr>
+      <tr><td class='titder'>MONTO GIFT CARD ${useCounterStore().agencia.moneda}</td ><td class='conte2'>0.00</td></tr>
+      <tr><td class='titder'>MONTO A PAGAR ${useCounterStore().agencia.moneda}</td><td class='conte2'>${parseFloat(factura.montoTotal).toFixed(2)}</td></tr>
+      <tr><td class='titder' style='font-size: 8px'>IMPORTE BASE CRÉDITO FISCAL ${useCounterStore().agencia.moneda}</td>
       <td class='conte2'>${parseFloat(factura.montoTotal).toFixed(2)}</td></tr>
       </table>
       <br>

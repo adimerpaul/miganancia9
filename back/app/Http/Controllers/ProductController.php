@@ -95,6 +95,7 @@ class ProductController extends Controller{
     public function store(StoreProductRequest $request){
 //        if ($request->category_id == 0) $request->merge(['category_id' => null]);
         if ($request->agencia_id == 0) $request->merge(['agencia_id' => $request->user()->agencia_id]);
+        $request->merge(['user_id' => $request->user()->id]);
         return Product::create($request->all());
     }
     public function show(Product $product){ return $product; }

@@ -81,7 +81,7 @@
                         <q-tooltip>{{p.name}}</q-tooltip>
                       </q-img>
                       <q-card-section class="q-pa-none q-ma-none">
-                        <div class="text-center text-subtitle2 text-bold">{{ p.price }} Bs</div>
+                        <div class="text-center text-subtitle2 text-bold">{{ p.price }} </div>
                         <q-btn v-if="p.cantidadPedida==0" @click="moreCantidad(p)" dense flat  class="full-width" icon="o_add_circle_outline" color="grey" no-caps label="Agregar">
                           <q-tooltip>Comprar</q-tooltip>
                         </q-btn>
@@ -139,7 +139,7 @@
               </q-img>
             </div>
             <q-card-section class="q-pa-none q-ma-none">
-              <div class="text-center text-subtitle2">{{ product.price }} Bs</div>
+              <div class="text-center text-subtitle2">{{ product.price }} {{$store.agencia.moneda}}</div>
               <div :class="product.cantidad<=0?'text-center text-bold text-red':' text-center text-bold'">{{ product.cantidad }} Disponible</div>
             </q-card-section>
             <q-card flat bordered class="bg-grey-1">
@@ -157,7 +157,7 @@
                     Precio
                   </div>
                   <div class="col-12 col-md-6">
-                    <div class="text-grey text-caption text-right">{{ product.price }} Bs</div>
+                    <div class="text-grey text-caption text-right">{{ product.price }} {{$store.agencia.moneda}}</div>
                   </div>
                   <!--                  <div class="col-12 col-md-6 text-subtitle2 text-bold text-grey">-->
                   <!--                    <q-icon name="o_local_shipping" class="text-grey" size="20px" />-->
@@ -262,7 +262,7 @@
               <div class="fit row wrap justify-between">
                 <div><q-chip color="white" dense :label="cantidadTotalPedida" text-color="black" icon="o_shopping_cart" /></div>
                 <div class="flex flex-center">Confirmar</div>
-                <div class="flex flex-center">Bs {{ totalVenta }}</div>
+                <div class="flex flex-center">{{$store.agencia.moneda}} {{ totalVenta }}</div>
               </div>
             </q-btn>
           </q-form>
@@ -277,7 +277,7 @@
           <div class="fit row wrap justify-between">
           <div><q-chip color="white" rounded :label="cantidadTotalPedida" text-color="black" icon="o_shopping_cart" /></div>
           <div class="flex flex-center">Ir al carrito de compras</div>
-          <div class="flex flex-center">Bs {{ totalVenta }}</div>
+          <div class="flex flex-center">{{$store.agencia.moneda}} {{ totalVenta }}</div>
         </div>
       </q-btn>
   </q-layout>
@@ -364,7 +364,7 @@ export default {
         const saltoLinea = '%0A'
         let details = ''
         this.saleDetails.forEach(p => {
-          details += `*${p.name}* ${p.cantidad} x ${p.price} = ${p.cantidad * p.price} Bs ${saltoLinea}`
+          details += `*${p.name}* ${p.cantidad} x ${p.price} = ${p.cantidad * p.price} ${this.$store.agencia.moneda} ${saltoLinea}`
         })
         const text = `https://wa.me/591${this.agencia.telefono}?text=*Nombre* ${this.sale.nombre} ${saltoLinea}*Direccion:* ${this.sale.direccion} ${saltoLinea}*Nota:* ${this.sale.nota} ${saltoLinea}${details}`
         this.search = ''

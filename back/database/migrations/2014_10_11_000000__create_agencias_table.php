@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('web')->nullable()->unique();
             $table->string('logo')->nullable();
             $table->string('color')->nullable();
+            $table->string('moneda')->nullable();
             $table->timestamps();
         });
     }

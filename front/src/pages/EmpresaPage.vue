@@ -148,6 +148,7 @@
                 />
               </div>
             </div>
+            <q-input outlined v-model="agencia.moneda" label="Moneda" dense hint="Moneda del Empresa"/>
             <q-btn class="full-width" rounded
                    :color="!agencia.nombre || !agencia.direccion || !agencia.telefono || !agencia.web || !agencia.color || !agencia.logo ? 'grey' : 'primary'"
                    :disable="!agencia.nombre || !agencia.direccion || !agencia.telefono || !agencia.web || !agencia.color || !agencia.logo"
@@ -174,7 +175,8 @@ export default {
         { name: 'telefono', label: 'Teléfono', field: 'telefono', align: 'left', sortable: true },
         { name: 'web', label: 'Web', field: 'web', align: 'left', sortable: true },
         { name: 'logo', label: 'Logo', field: 'logo', align: 'left', sortable: true },
-        { name: 'color', label: 'Color', field: 'color', align: 'left', sortable: true }
+        { name: 'color', label: 'Color', field: 'color', align: 'left', sortable: true },
+        { name: 'moneda', label: 'Moneda', field: 'moneda', align: 'left', sortable: true }
       ],
       agencias: [],
       agencia: {
@@ -243,7 +245,8 @@ export default {
         telefono: agencia.telefono,
         web: agencia.web,
         logo: agencia.logo,
-        color: agencia.color
+        color: agencia.color,
+        moneda: agencia.moneda
       }
     },
     agenciaAdd () {

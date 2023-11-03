@@ -16,6 +16,7 @@ class Agencia extends Model
         'web',
         'logo',
         'color',
+        'moneda',
     ];
     public function users(){
         return $this->hasMany(User::class);

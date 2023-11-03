@@ -48,7 +48,7 @@
               </q-item-section>
               <q-item-section>
                 <q-item-label class="text-subtitle2 text-grey">Costo total de inventario</q-item-label>
-                <q-item-label :class="`text-bold text-h6 text-${costoTotalProducts>0?'green':'red'}`">{{costoTotalProducts}} Bs</q-item-label>
+                <q-item-label :class="`text-bold text-h6 text-${costoTotalProducts>0?'green':'red'}`">{{costoTotalProducts}} {{$store.agencia.moneda}}</q-item-label>
               </q-item-section>
             </q-item>
           </q-card-section>
@@ -104,7 +104,7 @@
                     </div>
                   </q-img>
                   <q-card-section class="q-pa-none q-ma-none">
-                    <div class="text-center text-subtitle2 text-bold">{{ p.price }} Bs</div>
+                    <div class="text-center text-subtitle2 text-bold">{{ p.price }} {{$store.agencia.moneda}}</div>
                     <div :class="p.amount<=0?'text-center text-bold text-red':' text-center text-bold'">{{ p.amount }} {{ $q.screen.lt.md?'Dis':'Disponible' }}</div>
                   </q-card-section>
                   <q-tooltip>{{p.name}}</q-tooltip>
@@ -148,7 +148,7 @@
               </q-img>
             </div>
             <q-card-section class="q-pa-none q-ma-none">
-              <div class="text-center text-subtitle2">{{ product.price }} Bs</div>
+              <div class="text-center text-subtitle2">{{ product.price }} {{$store.agencia.moneda}}</div>
               <div :class="product.cantidad<=0?'text-center text-bold text-red':' text-center text-bold'">{{ product.cantidad }} Disponible</div>
             </q-card-section>
             <q-card flat bordered class="bg-grey-1">
@@ -166,14 +166,14 @@
                       Precio
                   </div>
                   <div class="col-12 col-md-6">
-                    <div class="text-grey text-caption text-right">{{ product.price }} Bs</div>
+                    <div class="text-grey text-caption text-right">{{ product.price }} {{$store.agencia.moneda}}</div>
                   </div>
                   <div class="col-12 col-md-6 text-subtitle2 text-bold text-grey">
                       <q-icon name="o_shopping_bag" class="text-grey" size="20px" />
                       Costo
                   </div>
                   <div class="col-12 col-md-6">
-                    <div class="text-grey text-caption text-right">{{ product.cost }} Bs</div>
+                    <div class="text-grey text-caption text-right">{{ product.cost }} {{$store.agencia.moneda}}</div>
                   </div>
 <!--                  <div class="col-12 col-md-6 text-subtitle2 text-bold text-grey">-->
 <!--                    <q-icon name="o_local_shipping" class="text-grey" size="20px" />-->

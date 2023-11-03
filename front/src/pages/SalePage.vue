@@ -59,7 +59,7 @@
                         <q-badge v-if="p.cantidadPedida>0" color="yellow-9" floating :label="p.cantidadPedida" style="padding: 5px"/>
                       </q-img>
                       <q-card-section class="q-pa-none q-ma-none">
-                        <div class="text-center text-subtitle2">{{ p.price }} Bs</div>
+                        <div class="text-center text-subtitle2">{{ p.price }} {{agencia.moneda}}</div>
                         <div :class="p.amount<=0?'text-center text-bold text-red':' text-center text-bold'">{{ p.amount }} {{ $q.screen.lt.md?'Dis':'Disponible' }}</div>
                       </q-card-section>
                     </q-card>
@@ -120,7 +120,7 @@
                                 <q-input v-model="props.row.precioVenta" type="number" @update:model-value="precioVenta(props.row)" dense style="margin: 0px">
                                   <template v-slot:prepend>
                                     <q-icon name="edit" size="xs" />
-                                    <div style="font-size: 10px">Bs.</div>
+                                    <div style="font-size: 10px">{{$store.agencia.moneda}}.</div>
                                   </template>
                                 </q-input>
                               </div>
@@ -143,7 +143,7 @@
                           <q-icon style="cursor: pointer" name="add_circle_outline" @click="addCantidad(props.row,props.pageIndex)"/>
                         </template>
                       </q-input>
-                      <div class="text-grey">= Bs {{redondeo(props.row.cantidadVenta*props.row.precioVenta)}}</div>
+                      <div class="text-grey">= {{$store.agencia.moneda}} {{redondeo(props.row.cantidadVenta*props.row.precioVenta)}}</div>
                     </q-td>
                   </q-tr>
                 </template>
@@ -163,7 +163,7 @@
                     Total
                   </q-item-section>
                   <q-item-section side>
-                    <div class="text-right text-grey-8 text-bold"> <u> Bs {{total}}</u></div>
+                    <div class="text-right text-grey-8 text-bold"> <u> {{$store.agencia.moneda}} {{total}}</u></div>
                   </q-item-section>
                 </template>
                 <q-card>
@@ -242,7 +242,7 @@
                 <q-input outlined dense label="TOTAL A PAGAR:" readonly v-model="total" />
               </div>
               <div class="col-6 col-md-4">
-                <q-input outlined dense label="EFECTIVO BS."  v-model="efectivo" />
+                <q-input outlined dense :label="`EFECTIVO ${$store.agencia.moneda}.`"  v-model="efectivo" />
               </div>
               <div class="col-6 col-md-4">
                 <q-input outlined dense label="CAMBIO:" readonly v-model="cambio" />
@@ -298,6 +298,7 @@ export default {
       client: {},
       aporte: false,
       qr: false,
+      agencia: JSON.parse(localStorage.getItem('agencia')),
       documents: ['CI', 'NIT', 'RUC', 'PASAPORTE'],
       metodoPago: 'Efectivo',
       // textoCambio: 'Aporte',
@@ -559,7 +560,7 @@ export default {
         const cambio = parseFloat(this.efectivo === '' ? 0 : this.efectivo) - parseFloat(this.total)
         const entero = Math.floor(cambio)
         const decimal = cambio - entero
-        return this.cambio < 0 ? 'Aporte' : 'Bs.' + decimal.toFixed(2)
+        return this.cambio < 0 ? 'Aporte' : this.$store.agencia.moneda + '.' + decimal.toFixed(2)
       }
     },
     cambioDecimal () {
